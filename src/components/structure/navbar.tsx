@@ -58,6 +58,9 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center space-x-4">
+          <Link href="/jobprovider" className={`${textLink} transition-colors`}>
+            Sign In
+          </Link>
           <Button className={isTop ? "bg-white/10 text-white hover:bg-white/20" : ""}>Sign In</Button>
           <Button className={isTop ? "bg-white/20 text-white hover:bg-white/30" : ""}>Get Started</Button>
         </div>
