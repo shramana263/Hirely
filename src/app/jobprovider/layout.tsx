@@ -1,36 +1,15 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
-import Sidebar from "./sidebar/page"; // adjust if needed
-
-interface SidebarContextType {
-  sidebarOpen: boolean;
-  setSidebarOpen: (open: boolean) => void;
-}
-
-const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
-
-export function useSidebar() {
-  const context = useContext(SidebarContext);
-  if (!context) throw new Error("useSidebar must be used within SidebarProvider");
-  return context;
-}
+import { ReactNode } from "react";
+import Sidebar from "./sidebar/page";
 
 export default function SidebarProvider({ children }: { children: ReactNode }) {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-
   return (
-    <SidebarContext.Provider value={{ sidebarOpen, setSidebarOpen }}>
-      <div className="flex min-h-screen">
-        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-        <main
-          className={`flex-grow transition-all duration-300 ${
-            sidebarOpen ? "ml-64" : "ml-0"
-          }`}
-        >
-          {children}
-        </main>
-      </div>
-    </SidebarContext.Provider>
+    <div className="flex min-h-screen">
+      <Sidebar />
+      <main className="flex-grow ml-64 transition-all duration-300 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+        {children}
+      </main>
+    </div>
   );
 }

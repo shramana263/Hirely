@@ -7,7 +7,7 @@ import { Suspense } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { card, CardContent } from "@/components/ui/card"
+import { card, cardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Search, Users, Briefcase, TrendingUp, Star, ArrowRight, Building, MapPin, Clock } from "lucide-react"
 import Link from "next/link"
@@ -271,11 +271,11 @@ export default function JobPlatformLanding() {
               Join thousands of professionals who have found their dream jobs through our platform.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="text-lg px-8 py-3">
+              <Button className="text-lg flex flex-row nowrap justify-center items-center  px-8 py-3">
                 Start Job Search
-                <ArrowRight className="ml-2 w-5 h-5" />
+                <ArrowRight className="  ml-4 w-5 h-5" />
               </Button>
-              <Button className="text-lg px-8 py-3 bg-transparent border border-gray-300 hover:bg-gray-100">
+              <Button className="text-lg flex-row px-8 py-3 bg-transparent border border-gray-300 hover:bg-gray-100">
                 Post a Job
               </Button>
             </div>

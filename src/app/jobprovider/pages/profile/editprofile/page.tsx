@@ -1,3 +1,4 @@
+
 "use client";
 
 import { motion } from "framer-motion";
@@ -6,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
+
 interface EditProviderModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -39,7 +41,7 @@ export default function EditProviderModal({
   return (
     <>
       <div
-        className="fixed inset-0 z-40  backdrop-blur-sm"
+        className="fixed inset-0 z-40 backdrop-blur-sm bg-black/30"
         onClick={onClose}
       />
 
@@ -50,14 +52,12 @@ export default function EditProviderModal({
         transition={{ duration: 0.2 }}
         className="fixed inset-0 z-50 flex items-center justify-center p-4"
       >
-        <div className="relative bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700">
+        <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700">
           <div className="sticky top-0 bg-blue-600 p-4 rounded-t-lg flex justify-between items-center z-10">
-            <h2 className="text-xl font-bold text-white">
-              Edit Profile
-            </h2>
+            <h2 className="text-xl font-bold text-white">Edit Profile</h2>
             <button
               onClick={onClose}
-              className="text-white hover:text-gray-400 rounded-full p-1  transition-colors"
+              className="text-white hover:text-gray-300 rounded-full p-1 transition-colors"
               aria-label="Close modal"
             >
               <X size={20} />
@@ -68,7 +68,9 @@ export default function EditProviderModal({
             <form onSubmit={onSubmit} className="space-y-6">
               <div className="space-y-4">
                 <div>
-                  <Label className="text-gray-700">Company Name</Label>
+                  <Label className="text-gray-700 dark:text-gray-200">
+                    Company Name
+                  </Label>
                   <Input
                     name="name"
                     value={formData.name}
@@ -80,7 +82,9 @@ export default function EditProviderModal({
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-gray-700">Contact Number</Label>
+                    <Label className="text-gray-700 dark:text-gray-200">
+                      Contact Number
+                    </Label>
                     <Input
                       name="contact_no"
                       value={formData.contact_no}
@@ -90,7 +94,9 @@ export default function EditProviderModal({
                     />
                   </div>
                   <div>
-                    <Label className="text-gray-700">Email</Label>
+                    <Label className="text-gray-700 dark:text-gray-200">
+                      Email
+                    </Label>
                     <Input
                       name="email"
                       type="email"
@@ -103,7 +109,9 @@ export default function EditProviderModal({
                 </div>
 
                 <div>
-                  <Label className="text-gray-700">Industry Type</Label>
+                  <Label className="text-gray-700 dark:text-gray-200">
+                    Industry Type
+                  </Label>
                   <Input
                     name="industry"
                     value={formData.industry}
@@ -115,7 +123,9 @@ export default function EditProviderModal({
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <Label className="text-gray-700">Address</Label>
+                    <Label className="text-gray-700 dark:text-gray-200">
+                      Address
+                    </Label>
                     <Input
                       name="address"
                       value={formData.address}
@@ -125,7 +135,9 @@ export default function EditProviderModal({
                     />
                   </div>
                   <div>
-                    <Label className="text-gray-700">Country</Label>
+                    <Label className="text-gray-700 dark:text-gray-200">
+                      Country
+                    </Label>
                     <Input
                       name="country"
                       value={formData.country}
@@ -135,7 +147,9 @@ export default function EditProviderModal({
                     />
                   </div>
                   <div>
-                    <Label className="text-gray-700">Pincode</Label>
+                    <Label className="text-gray-700 dark:text-gray-200">
+                      Pincode
+                    </Label>
                     <Input
                       name="pincode"
                       value={formData.pincode}
@@ -148,7 +162,9 @@ export default function EditProviderModal({
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-gray-700">Website</Label>
+                    <Label className="text-gray-700 dark:text-gray-200">
+                      Website
+                    </Label>
                     <Input
                       name="website"
                       value={formData.website}
@@ -158,7 +174,9 @@ export default function EditProviderModal({
                     />
                   </div>
                   <div>
-                    <Label className="text-gray-700">Established</Label>
+                    <Label className="text-gray-700 dark:text-gray-200">
+                      Established
+                    </Label>
                     <Input
                       name="established"
                       value={formData.established}
@@ -170,7 +188,9 @@ export default function EditProviderModal({
                 </div>
 
                 <div>
-                  <Label className="text-gray-700">Description</Label>
+                  <Label className="text-gray-700 dark:text-gray-200">
+                    Description
+                  </Label>
                   <Textarea
                     name="description"
                     value={formData.description}
@@ -182,9 +202,10 @@ export default function EditProviderModal({
                 </div>
               </div>
 
-              <div className=" cursor-pointer flex justify-end gap-4 pt-4 border-t border-gray-200">
+              <div className="cursor-pointer flex justify-end gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <Button
                   type="button"
+                
                   onClick={onClose}
                   className="min-w-[100px]"
                 >
@@ -192,7 +213,7 @@ export default function EditProviderModal({
                 </Button>
                 <Button
                   type="submit"
-                  className="min-w-[100px] bg-blue-600 hover:bg-blue-700  text-white transition-colors"
+                  className="min-w-[100px] bg-blue-600 hover:bg-blue-700 text-white transition-colors"
                 >
                   Save Changes
                 </Button>
