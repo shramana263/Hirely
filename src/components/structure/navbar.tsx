@@ -24,8 +24,6 @@ export default function Navbar() {
   const border = useTransform(borderOpacity, [0, 1], ["rgba(229,231,235,0)", "rgba(229,231,235,1)"])
 
   // Dynamic text color classes
-  const textMain = isTop ? "text-white" : "text-gray-900"
-  const textSub = isTop ? "text-gray-200" : "text-gray-600"
   const textLink = isTop ? "text-gray-100 hover:text-blue-200" : "text-gray-600 hover:text-blue-600"
   const textBrand = isTop ? "text-white" : "text-gray-900"
 
@@ -58,10 +56,11 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center space-x-4">
-          <Link href="/jobprovider" className={`${textLink} transition-colors`}>
-            Sign In
-          </Link>
+          <Link href="/guest/login" className={`${textLink} transition-colors`}>
+ 
           <Button className={isTop ? "bg-white/10 text-white hover:bg-white/20" : ""}>Sign In</Button>
+                 
+          </Link>
           <Button className={isTop ? "bg-white/20 text-white hover:bg-white/30" : ""}>Get Started</Button>
         </div>
       </div>
