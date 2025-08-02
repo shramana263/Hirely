@@ -10,6 +10,7 @@ export default function Sidebar() {
   const toggleSidebar = () => setIsOpen(!isOpen);
 
   const navItems = [
+    {label: "Dashboard",path:"/jobprovider"},
     { label: "Profile", path: "/jobprovider/profile" },
     { label: "Job Appliers", path: "/jobprovider/appliers" },
     { label: "Job Postings", path: "/jobprovider/jobposting" },
@@ -19,7 +20,6 @@ export default function Sidebar() {
 
   return (
     <>
-    
       <button
         onClick={toggleSidebar}
         className="fixed md:hidden z-30 top-4 left-4 p-2 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white"
@@ -42,8 +42,8 @@ export default function Sidebar() {
         }`}
       >
         <div className="flex justify-between items-center mb-4">
-          <h2 className="font-bold text-gray-800 dark:text-gray-100 text-2xl md:text-3xl">
-            <Link href="/jobprovider">Dashboard</Link>
+          <h2 className="font-bold mb-2 text-gray-800 dark:text-gray-100 text-3xl font-sans md:text-3xl">
+            <Link href="/jobprovider">HIRELY</Link>
           </h2>
           <button
             onClick={toggleSidebar}

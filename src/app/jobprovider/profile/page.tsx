@@ -1,15 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { Pencil, Plus } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { useRouter } from "next/navigation";  // Import useRouter
+  // Import useRouter
 import EditProviderModal from "./updateprofileModal";
 
 
 export default function ProviderProfile() {
-  const router = useRouter();  // Initialize router
+ // Initialize router
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -42,15 +42,7 @@ export default function ProviderProfile() {
 
   return (
     <div className="relative min-h-screen px-4 sm:px-6 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 transition-colors duration-300">
-      <Image
-        src="/images/image.png"
-        alt="Background"
-        fill
-        style={{ objectFit: "cover" }}
-        priority
-        className="-z-10 opacity-10"
-      />
-
+  
       <EditProviderModal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
@@ -67,16 +59,10 @@ export default function ProviderProfile() {
         transition={{ duration: 0.6 }}
         className="relative max-w-5xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-4 sm:p-8 border border-gray-200 dark:border-gray-700 transition-all duration-300"
       >
-        {/* Add Profile Button */}
-        <button
-          onClick={() => router.push("/jobprovider/profile/createprofile")}
-          className="absolute top-4 right-4 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5 py-2 text-sm font-medium shadow-lg transition-all transform hover:scale-105 active:scale-95 z-10"
-        >
-          <Plus size={16} /> Add Profile
-        </button>
+
 
         <div className="flex flex-col md:flex-row items-start justify-between gap-6 md:gap-8 mb-8 md:mb-10">
-          {/* Logo & Edit */}
+       
           <motion.div
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}

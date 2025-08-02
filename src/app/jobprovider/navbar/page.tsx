@@ -20,7 +20,7 @@ export default function Navbar({ onToggleSidebar }: NavbarProps) {
         flex items-center justify-between
       "
     >
-      {/* Hamburger button - visible only on mobile */}
+  
       <button
         onClick={onToggleSidebar}
         className="md:hidden p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition"
@@ -29,7 +29,7 @@ export default function Navbar({ onToggleSidebar }: NavbarProps) {
         <Menu size={24} />
       </button>
 
-      {/* Spacer to keep theme toggle on right */}
+  
       <div className="flex-1"></div>
 
       <ThemeToggle />
