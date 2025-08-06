@@ -162,13 +162,19 @@ export default function CreateJobForm() {
             />
           </div>
 
-          {/* Submit Button */}
-          <div className="pt-4">
+          <div className="pt-4 flex justify-between ">
             <button
               type="submit"
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-semibold text-sm shadow transition-transform hover:scale-105"
             >
               Post Job
+            </button>
+            <button
+              onClick={() => router.push("/jobprovider/jobposting")}
+              type="button"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-semibold text-sm shadow transition-transform hover:scale-105"
+            >
+              Cancel
             </button>
           </div>
         </form>

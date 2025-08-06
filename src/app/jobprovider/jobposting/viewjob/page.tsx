@@ -38,15 +38,15 @@ Requirements:
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow border border-gray-200 dark:border-gray-700">
-            <p className="text-sm text-gray-500 mb-1">Location</p>
+            <p className="text-sm text-gray-500 mb-1"><b>Location</b></p>
             <p className="text-gray-700 dark:text-gray-200">{job.location}</p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow border border-gray-200 dark:border-gray-700">
-            <p className="text-sm text-gray-500 mb-1">Job Type</p>
+            <p className="text-sm text-gray-500 mb-1"><b>Job Type</b></p>
             <p className="text-gray-700 dark:text-gray-200">{job.type}</p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow border border-gray-200 dark:border-gray-700">
-            <p className="text-sm text-gray-500 mb-1">Salary</p>
+            <p className="text-sm text-gray-500 mb-1"><b>Salary</b></p>
             <p className="text-gray-700 dark:text-gray-200">{job.salary}</p>
           </div>
         </div>

@@ -35,7 +35,6 @@ export default function Sidebar() {
         />
       )}
 
-      {/* Sidebar */}
       <aside
         className={`bg-gray-200 dark:bg-gray-800 w-64 p-5 space-y-6 border-r border-gray-200 dark:border-gray-700 fixed h-full z-20 md:bg-white md:p-8 transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"

@@ -5,7 +5,7 @@ import { Pencil, Trash2, Plus, Eye } from "lucide-react"; // Added Eye icon
 import EditJobModal from "./updatejob";
 import { useRouter } from "next/navigation";
 
-interface Job {
+ interface Job {
   id: number;
   title: string;
   company: string;
@@ -85,9 +85,6 @@ export default function JobPostingsPage() {
       setJobs((prev) => prev.filter((job) => job.id !== id));
     }
   };
-
-
-
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6 text-gray-900 dark:text-gray-100">
       <div className="max-w-6xl mx-auto">
@@ -122,7 +119,6 @@ export default function JobPostingsPage() {
               <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
                 <span className="font-semibold">Posted on:</span> {job.postedOn}
               </div>
-
               <div className="mt-4 flex gap-6">
                 <button
                   onClick={() => openEditModal(job)}
@@ -141,8 +137,6 @@ export default function JobPostingsPage() {
                   <Trash2 size={20} />
                   <span className="text-sm">Delete</span>
                 </button>
-
-                {/* New View Job Button */}
                 <button
                   onClick={() => router.push(`/jobprovider/jobposting/viewjob`)}
                   title="View Job"
@@ -155,14 +149,11 @@ export default function JobPostingsPage() {
             </div>
           ))}
         </div>
-
         <EditJobModal
           isOpen={isEditModalOpen}
           onClose={closeEditModal}
-          job={currentJob}
           onFormChange={handleFormChange}
-          onSubmit={handleSubmit}
-        />
+          onSubmit={handleSubmit} job={null}        />
       </div>
     </div>
   );
