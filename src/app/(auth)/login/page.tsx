@@ -6,24 +6,25 @@ import axiosClient from "@/library/axiosClient";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [role, setRole] = useState("pet_owner");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = async () => {
-    try {
-      const response = await axiosClient.post("/auth/login", { email, password });
-      const userRole = response.data.user.role;
+const handleLogin = async () => {
+  try {
+    const response = await axiosClient.post("/auth/login", { email, password });
+    const userRole = response.data.user.role;
+    const token = response.data.accessToken; 
+    sessionStorage.setItem("accessToken", token); 
 
-      if (userRole === "jobseeker") router.push("/jobprovider");
-      else if (userRole === "admin") router.push("/jobprovider");
-      else if (userRole === "jobprovider") router.push("/jobprovider");
-
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Login failed");
-    }
-  };
+    if (userRole === "jobseeker") router.push("/jobprovider");
+    else if (userRole === "admin") router.push("/jobprovider");
+    else if (userRole === "jobprovider") router.push("/jobprovider");
+  } catch (err: any) {
+    setError(err.response?.data?.message || "Login failed");
+  }
+};
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
@@ -44,8 +45,8 @@ export default function LoginPage() {
         Login
       </button>
       <p className="text-red-500 mt-2">{error}</p>
-      <p className="mt-4 text-blue-500 cursor-pointer" onClick={() => router.push("/guest/register")}>
-        Don't have an account? Register
+      <p className="mt-4 text-blue-500 cursor-pointer" onClick={() => router.push("/register")}>
+        Dont have an account? Register
       </p>
     </div>
   );

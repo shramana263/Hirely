@@ -29,9 +29,9 @@ export default function RegisterPage() {
       await axiosClient.post("/auth/register", formData);
 
       // Redirect based on role
-      if (formData.role === "jobprovider") router.push("/guest/login");
-      else if (formData.role === "admin") router.push("/guest/login");
-      else if (formData.role === "jobseeker") router.push("/guest/login");
+      if (formData.role === "jobprovider") router.push("/login");
+      else if (formData.role === "admin") router.push("/login");
+      else if (formData.role === "jobseeker") router.push("/login");
 
     } catch (err: any) {
       setError(err.response?.data?.message || "Registration failed");

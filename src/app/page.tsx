@@ -7,7 +7,6 @@ import { Suspense } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { card, cardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Search, Users, Briefcase, TrendingUp, Star, ArrowRight, Building, MapPin, Clock } from "lucide-react"
 import Link from "next/link"
@@ -34,6 +33,7 @@ export default function JobPlatformLanding() {
         staggerChildren: 0.1,
       },
     },
+
   }
 
 
