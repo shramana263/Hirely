@@ -11,15 +11,12 @@ interface EditProviderModalProps {
   isOpen: boolean;
   onClose: () => void;
   formData: {
-    name: string;
     contact_no: string;
-    email: string;
     industry: string;
     address: string;
     country: string;
-    pincode: string;
-    website: string;
-    established: string;
+    website_link: string;
+    establishment: string;
     description: string;
   };
   onFormChange: (
@@ -76,10 +73,9 @@ export default function EditProviderModal({
                 <Label>Company Name</Label>
                 <Input
                   name="name"
-                  value={formData.name}
-                  onChange={onFormChange}
+               
                   placeholder="Enter company name"
-                  className="mt-1"
+                  className="mt-1" readOnly
                 />
               </div>
 
@@ -99,8 +95,7 @@ export default function EditProviderModal({
                   <Input
                     name="email"
                     type="email"
-                    value={formData.email}
-                    onChange={onFormChange}
+                    readOnly
                     placeholder="Enter email"
                     className="mt-1"
                   />
@@ -139,34 +134,24 @@ export default function EditProviderModal({
                     className="mt-1"
                   />
                 </div>
-                <div>
-                  <Label>Pincode</Label>
-                  <Input
-                    name="pincode"
-                    value={formData.pincode}
-                    onChange={onFormChange}
-                    placeholder="Pincode"
-                    className="mt-1"
-                  />
-                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label>Website</Label>
-                  <Input
-                    name="website"
-                    value={formData.website}
+                  <Input 
+                    name="website_link"
+                    value={formData.website_link}
                     onChange={onFormChange}
                     placeholder="Website URL"
                     className="mt-1"
                   />
                 </div>
                 <div>
-                  <Label>Established</Label>
+                  <Label>Establishment</Label>
                   <Input
-                    name="established"
-                    value={formData.established}
+                    name="establishment"
+                    value={formData.establishment}
                     onChange={onFormChange}
                     placeholder="Year"
                     className="mt-1"

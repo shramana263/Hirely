@@ -1,31 +1,68 @@
 "use client";
 
 import Image from "next/image";
-import { Pencil, Plus } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { motion } from "framer-motion";
-import { useState } from "react";
-import { useRouter } from "next/navigation";  // Import useRouter
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import EditProviderModal from "./updateprofileModal";
-
+import axiosClient from "@/library/axiosClient";
 
 export default function ProviderProfile() {
-  const router = useRouter();  // Initialize router
+  const router = useRouter();
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [showAllFields, setShowAllFields] = useState(false);
+  const [formData, setFormData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const [formData, setFormData] = useState({
-    name: "Robin Studios",
-    contact_no: "+91 56984 71552",
-    email: "info@robinstudios.com",
-    industry: "Creative Technology Company",
-    address: "123 Tech Lane, Silicon Valley",
-    country: "India",
-    pincode: "560001",
-    website: "https://www.robinstudios.com",
-    established: "2017",
-    description:
-      "Robin Studios is a creative tech company focused on building scalable web applications and delivering top-notch design services. We foster a collaborative culture and strive for innovation in every project.",
-  });
+
+async function fetchProfile() {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const res = await axiosClient.get("/providers/profile", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const data = res.data.data;
+    setFormData(data);
+
+    const isProfileFilled = data.contact_no || data.description || data.address;
+    setShowAllFields(isProfileFilled);
+  } catch (err: any) {
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+}
+
+
+  useEffect(() => {
+  fetchProfile(); 
+}, []);
+
+
+
+
+async function updateProfile() {
+  const accessToken = sessionStorage.getItem("accessToken");
+
+  const res = await axiosClient.put(
+    "/providers/updateprofile",
+    formData,                           
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  console.log(res.data);
+}
+
 
   const handleFormChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -34,16 +71,23 @@ export default function ProviderProfile() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    alert("Profile updated successfully!");
-    setIsEditModalOpen(false);
-  };
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  await updateProfile();         
+  await fetchProfile();          
+  setShowAllFields(true);
+  alert("Profile updated successfully!");
+  setIsEditModalOpen(false);
+};
+  if (loading) return <div className="p-8 text-center">Loading...</div>;
+  if (error) return <div className="p-8 text-center text-red-500">{error}</div>;
+  if (!formData) return null;
 
   return (
+   
     <div className="relative min-h-screen px-4 sm:px-6 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 transition-colors duration-300">
       <Image
-        src="/images/image.png"
+        src="/images/edit.png"
         alt="Background"
         fill
         style={{ objectFit: "cover" }}
@@ -57,7 +101,6 @@ export default function ProviderProfile() {
         formData={formData}
         onFormChange={handleFormChange}
         onSubmit={handleSubmit}
-      
       />
 
       {/* Main Profile Card */}
@@ -67,14 +110,6 @@ export default function ProviderProfile() {
         transition={{ duration: 0.6 }}
         className="relative max-w-5xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-4 sm:p-8 border border-gray-200 dark:border-gray-700 transition-all duration-300"
       >
-        {/* Add Profile Button */}
-        <button
-          onClick={() => router.push("/jobprovider/profile/createprofile")}
-          className="absolute top-4 right-4 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5 py-2 text-sm font-medium shadow-lg transition-all transform hover:scale-105 active:scale-95 z-10"
-        >
-          <Plus size={16} /> Add Profile
-        </button>
-
         <div className="flex flex-col md:flex-row items-start justify-between gap-6 md:gap-8 mb-8 md:mb-10">
           {/* Logo & Edit */}
           <motion.div
@@ -100,7 +135,6 @@ export default function ProviderProfile() {
             </button>
           </motion.div>
 
-          {/* Profile Info */}
           <div className="text-center md:text-left flex-1">
             <div className="inline-block bg-blue-100/50 dark:bg-blue-900/30 px-3 py-1 sm:px-4 sm:py-1 rounded-full mb-2 sm:mb-3">
               <span className="text-blue-800 dark:text-blue-200 text-xs sm:text-sm font-semibold">
@@ -112,7 +146,7 @@ export default function ProviderProfile() {
             </h1>
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 sm:gap-4 mt-2 sm:mt-4">
               <span className="text-xs sm:text-sm bg-gray-100 dark:bg-gray-700 px-2 py-1 sm:px-3 sm:py-1 rounded-full">
-                Established: <span className="font-semibold">{formData.established}</span>
+                establishment: <span className="font-semibold">{formData.establishment}</span>
               </span>
             </div>
           </div>
@@ -120,57 +154,78 @@ export default function ProviderProfile() {
 
         <hr className="my-6 sm:my-8 border-gray-200 dark:border-gray-700" />
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-          className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4"
-        >
-          {["email", "contact_no", "website", "address", "country", "pincode"].map((key, index) => {
-            const label = key.charAt(0).toUpperCase() + key.replace("_", " ").slice(1);
-            const value = key === "website" ? (
-              <a
-                href={formData.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:underline text-blue-600 dark:text-blue-400 font-medium break-all"
-              >
-                {formData.website}
-              </a>
-            ) : (
-              formData[key as keyof typeof formData]
-            );
+        {/* Only show name and email initially */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          {["name", "email"].map((key) => (
+            <div
+              key={key}
+              className="p-2 sm:p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+            >
+              <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                {key.charAt(0).toUpperCase() + key.slice(1)}
+              </p>
+              <p className="font-medium text-sm sm:text-base mt-1">
+                {formData[key]}
+              </p>
+            </div>
+          ))}
+        </div>
 
-            return (
-              <div
-                key={index}
-                className="p-2 sm:p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
-              >
-                <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-300">
-                  {label}
-                </p>
-                <p className="font-medium text-sm sm:text-base mt-1">{value}</p>
+        {/* Show all fields after editing */}
+        {showAllFields && (
+          <>
+            <hr className="my-6 sm:my-8 border-gray-200 dark:border-gray-700" />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4"
+            >
+              {["contact_no", "website_link", "address", "country"].map((key, index) => {
+                const label = key.charAt(0).toUpperCase() + key.replace("_", " ").slice(1);
+                const value = key === "website_kink" ? (
+                  <a
+                    href={formData.website_link}
+                    rel="noopener noreferrer"
+                    className="hover:underline text-blue-600 dark:text-blue-400 font-medium break-all"
+                  >
+                    {formData.website_link}
+                  </a>
+                ) : (
+                  formData[key]
+                );
+                return (
+                  <div
+                    key={index}
+                    className="p-2 sm:p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                      {label}
+                    </p>
+                    <p className="font-medium text-sm sm:text-base mt-1">{value}</p>
+                  </div>
+                );
+              })}
+            </motion.div>
+            <hr className="my-6 sm:my-8 border-gray-200 dark:border-gray-700" />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+            >
+              <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                <div className="w-1 h-6 sm:h-8 bg-blue-600 rounded-full"></div>
+                <h3 className="text-xl sm:text-2xl font-bold">About the Company</h3>
               </div>
-            );
-          })}
-        </motion.div>
-
-        <hr className="my-6 sm:my-8 border-gray-200 dark:border-gray-700" />
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.6 }}
-        >
-          <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-            <div className="w-1 h-6 sm:h-8 bg-blue-600 rounded-full"></div>
-            <h3 className="text-xl sm:text-2xl font-bold">About the Company</h3>
-          </div>
-          <div className="bg-gray-50 dark:bg-gray-700 p-4 sm:p-5 rounded-lg">
-            <p className="leading-relaxed text-sm sm:text-base">{formData.description}</p>
-          </div>
-        </motion.div>
+              <div className="bg-gray-50 dark:bg-gray-700 p-4 sm:p-5 rounded-lg">
+                <p className="leading-relaxed text-sm sm:text-base">{formData.description}</p>
+              </div>
+            </motion.div>
+          </>
+        )}
       </motion.div>
     </div>
-  );
+ 
+      );
+      
 }
