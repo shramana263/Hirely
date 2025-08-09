@@ -6,7 +6,7 @@ import axiosClient from "@/library/axiosClient";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [role, setRole] = useState("pet_owner");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
