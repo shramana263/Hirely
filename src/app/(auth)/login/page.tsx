@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axiosClient from "@/library/axiosClient";
 
+
 export default function LoginPage() {
   const router = useRouter();
 
@@ -17,10 +18,16 @@ const handleLogin = async () => {
     const userRole = response.data.user.role;
     const token = response.data.accessToken; 
     sessionStorage.setItem("accessToken", token); 
+    console.log(response.data)
 
     if (userRole === "jobseeker") router.push("/jobprovider");
+    
     else if (userRole === "admin") router.push("/jobprovider");
+ 
     else if (userRole === "jobprovider") router.push("/jobprovider");
+       console.log(response.data.user.role);
+       console.log("loggged in");
+       
 
   } catch (err: any) {
     setError(err.response?.data?.message || "Login failed");
