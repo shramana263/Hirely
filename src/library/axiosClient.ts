@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: "http://localhost:6008/api/",
+  baseURL: "https://jobsite-api.wishalpha.com/api/",
   headers: {
     "Content-Type": "application/json",
   },
