@@ -4,12 +4,12 @@ import Image from "next/image";
 import { Pencil } from "lucide-react";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+
 import EditProviderModal from "./updateprofileModal";
 import axiosClient from "@/library/axiosClient";
 
 export default function ProviderProfile() {
-  const router = useRouter();
+  
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [showAllFields, setShowAllFields] = useState(false);
@@ -103,7 +103,6 @@ const handleSubmit = async (e: React.FormEvent) => {
         onSubmit={handleSubmit}
       />
 
-      {/* Main Profile Card */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -111,7 +110,7 @@ const handleSubmit = async (e: React.FormEvent) => {
         className="relative max-w-5xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-4 sm:p-8 border border-gray-200 dark:border-gray-700 transition-all duration-300"
       >
         <div className="flex flex-col md:flex-row items-start justify-between gap-6 md:gap-8 mb-8 md:mb-10">
-          {/* Logo & Edit */}
+      
           <motion.div
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}
@@ -154,7 +153,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
         <hr className="my-6 sm:my-8 border-gray-200 dark:border-gray-700" />
 
-        {/* Only show name and email initially */}
+       
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           {["name", "email"].map((key) => (
             <div
@@ -171,7 +170,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           ))}
         </div>
 
-        {/* Show all fields after editing */}
+  
         {showAllFields && (
           <>
             <hr className="my-6 sm:my-8 border-gray-200 dark:border-gray-700" />

@@ -6,25 +6,33 @@ import { Eye, EyeOff, Mail, Lock, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import axiosClient from "@/library/axiosClient";
 
+
 export default function LoginPage() {
   const router = useRouter();
-  const [role, setRole] = useState("pet_owner");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = async () => {
-    try {
-      const response = await axiosClient.post("/auth/login", { email, password });
-      const userRole = response.data.user.role;
-      const token = response.data.accessToken;
-      sessionStorage.setItem("accessToken", token);
 
-      if (userRole === "jobseeker") router.push("/jobprovider");
-      else if (userRole === "admin") router.push("/jobprovider");
-      else if (userRole === "jobprovider") router.push("/jobprovider");
+const handleLogin = async () => {
+  try {
+    const response = await axiosClient.post("/auth/login", { email, password });
+    const userRole = response.data.user.role;
+    const token = response.data.accessToken; 
+    sessionStorage.setItem("accessToken", token); 
+    console.log(response.data)
+
+    if (userRole === "jobseeker") router.push("/jobprovider");
+    
+    else if (userRole === "admin") router.push("/jobprovider");
+ 
+    else if (userRole === "jobprovider") router.push("/jobprovider");
+       console.log(response.data.user.role);
+       console.log("loggged in");
+      
 
     } catch (err: any) {
       setError(err.response?.data?.message || "Login failed");
@@ -32,28 +40,7 @@ export default function LoginPage() {
   };
 
   return (
-    // <div className="flex flex-col items-center justify-center h-screen">
-    //   <h2 className="text-3xl mb-4">Login</h2>
-    //   <input
-    //     type="email"
-    //     placeholder="Email"
-    //     className="border p-2 mb-2"
-    //     onChange={(e) => setEmail(e.target.value)}
-    //   />
-    //   <input
-    //     type="password"
-    //     placeholder="Password"
-    //     className="border p-2 mb-2"
-    //     onChange={(e) => setPassword(e.target.value)}
-    //   />
-    //   <button className="bg-green-600 text-white px-4 py-2 rounded" onClick={handleLogin}>
-    //     Login
-    //   </button>
-    //   <p className="text-red-500 mt-2">{error}</p>
-    //   <p className="mt-4 text-blue-500 cursor-pointer" onClick={() => router.push("/register")}>
-    //     Don't have an account? Register
-    //   </p>
-    // </div>
+  
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
 
       <div className="absolute inset-0 overflow-hidden">
