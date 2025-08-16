@@ -1,9 +1,8 @@
 "use client"
 
-import { Canvas } from "@react-three/fiber"
-import { OrbitControls, Float, Text3D, Environment } from "@react-three/drei"
+import {  Float} from "@react-three/drei"
 import { easeOut } from "framer-motion"
-import { Suspense } from "react"
+
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,16 +11,16 @@ import { Search, Users, Briefcase, TrendingUp, Star, ArrowRight, Building, MapPi
 import Link from "next/link"
 import Navbar from "@/components/structure/navbar"
 
-function FloatingCube({ position, color }: { position: [number, number, number]; color: string }) {
-  return (
-    <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-      <mesh position={position}>
-        <boxGeometry args={[0.5, 0.5, 0.5]} />
-        <meshStandardMaterial color={color} />
-      </mesh>
-    </Float>
-  )
-}
+// function FloatingCube({ position, color }: { position: [number, number, number]; color: string }) {
+//   return (
+//     <Float speed={2} rotationIntensity={1} floatIntensity={2}>
+//       <mesh position={position}>
+//         <boxGeometry args={[0.5, 0.5, 0.5]} />
+//         <meshStandardMaterial color={color} />
+//       </mesh>
+//     </Float>
+//   )
+// }
 
 
 export default function JobPlatformLanding() {

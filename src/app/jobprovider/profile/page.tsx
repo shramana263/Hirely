@@ -7,9 +7,10 @@ import { useEffect, useState } from "react";
 
 import EditProviderModal from "./updateprofileModal";
 import axiosClient from "@/library/axiosClient";
+import { isAxiosError } from "axios";
 
 export default function ProviderProfile() {
-  
+
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [showAllFields, setShowAllFields] = useState(false);
@@ -18,50 +19,54 @@ export default function ProviderProfile() {
   const [error, setError] = useState<string | null>(null);
 
 
-async function fetchProfile() {
-  try {
-    const accessToken = sessionStorage.getItem("accessToken");
-    const res = await axiosClient.get("/providers/profile", {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+  async function fetchProfile() {
+    try {
+      const accessToken = sessionStorage.getItem("accessToken");
+      const res = await axiosClient.get("/providers/profile", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
-    const data = res.data.data;
-    setFormData(data);
+      const data = res.data.data;
+      setFormData(data);
 
-    const isProfileFilled = data.contact_no || data.description || data.address;
-    setShowAllFields(isProfileFilled);
-  } catch (err: any) {
-    setError(err.message);
-  } finally {
-    setLoading(false);
+      const isProfileFilled = data.contact_no || data.description || data.address;
+      setShowAllFields(isProfileFilled);
+    } catch (err: unknown) {
+      if (isAxiosError<{ message?: string }>(err)) {
+        setError(err.response?.data?.message || "An error occurred");
+      } else {
+        setError("An error occurred");
+      }
+    } finally {
+      setLoading(false);
+    }
   }
-}
 
 
   useEffect(() => {
-  fetchProfile(); 
-}, []);
+    fetchProfile();
+  }, []);
 
 
 
 
-async function updateProfile() {
-  const accessToken = sessionStorage.getItem("accessToken");
+  async function updateProfile() {
+    const accessToken = sessionStorage.getItem("accessToken");
 
-  const res = await axiosClient.put(
-    "/providers/updateprofile",
-    formData,                           
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
+    const res = await axiosClient.put(
+      "/providers/updateprofile",
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
 
-  console.log(res.data);
-}
+    console.log(res.data);
+  }
 
 
   const handleFormChange = (
@@ -71,20 +76,20 @@ async function updateProfile() {
     setFormData({ ...formData, [name]: value });
   };
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  await updateProfile();         
-  await fetchProfile();          
-  setShowAllFields(true);
-  alert("Profile updated successfully!");
-  setIsEditModalOpen(false);
-};
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await updateProfile();
+    await fetchProfile();
+    setShowAllFields(true);
+    alert("Profile updated successfully!");
+    setIsEditModalOpen(false);
+  };
   if (loading) return <div className="p-8 text-center">Loading...</div>;
   if (error) return <div className="p-8 text-center text-red-500">{error}</div>;
   if (!formData) return null;
 
   return (
-   
+
     <div className="relative min-h-screen px-4 sm:px-6 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 transition-colors duration-300">
       <Image
         src="/images/edit.png"
@@ -110,7 +115,7 @@ const handleSubmit = async (e: React.FormEvent) => {
         className="relative max-w-5xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-4 sm:p-8 border border-gray-200 dark:border-gray-700 transition-all duration-300"
       >
         <div className="flex flex-col md:flex-row items-start justify-between gap-6 md:gap-8 mb-8 md:mb-10">
-      
+
           <motion.div
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}
@@ -153,7 +158,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
         <hr className="my-6 sm:my-8 border-gray-200 dark:border-gray-700" />
 
-       
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           {["name", "email"].map((key) => (
             <div
@@ -170,7 +175,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           ))}
         </div>
 
-  
+
         {showAllFields && (
           <>
             <hr className="my-6 sm:my-8 border-gray-200 dark:border-gray-700" />
@@ -224,7 +229,7 @@ const handleSubmit = async (e: React.FormEvent) => {
         )}
       </motion.div>
     </div>
- 
-      );
-      
+
+  );
+
 }

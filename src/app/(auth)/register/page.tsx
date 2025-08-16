@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axiosClient from "@/library/axiosClient";
+import { AxiosError } from "axios";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -33,8 +34,14 @@ export default function RegisterPage() {
       else if (formData.role === "admin") router.push("/login");
       else if (formData.role === "jobseeker") router.push("/login");
 
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Registration failed");
+    } catch (err: unknown) {
+      const axiosError = err as AxiosError<{ message?: string }>;
+    
+      if (axiosError.response) {
+        setError(axiosError.response.data?.message || "Login failed");
+      } else {
+        setError("Login failed");
+      }
     } finally {
       setLoading(false);
     }

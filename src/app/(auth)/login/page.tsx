@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axiosClient from "@/library/axiosClient";
+import { AxiosError } from "axios";
 
 
 export default function LoginPage() {
@@ -29,9 +30,15 @@ const handleLogin = async () => {
        console.log("loggged in");
        
 
-  } catch (err: any) {
-    setError(err.response?.data?.message || "Login failed");
+  } catch (err: unknown) {
+  const axiosError = err as AxiosError<{ message?: string }>;
+
+  if (axiosError.response) {
+    setError(axiosError.response.data?.message || "Login failed");
+  } else {
+    setError("Login failed");
   }
+}
 };
 
   return (
@@ -54,7 +61,7 @@ const handleLogin = async () => {
       </button>
       <p className="text-red-500 mt-2">{error}</p>
       <p className="mt-4 text-blue-500 cursor-pointer" onClick={() => router.push("/register")}>
-        Don't have an account? Register
+        Do not have an account? Register
       </p>
     </div>
   );
