@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Eye, EyeOff, Mail, Lock, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import axiosClient from "@/library/axiosClient";
+import { AxiosError } from "axios";
 
 
 export default function LoginPage() {
@@ -34,10 +35,18 @@ const handleLogin = async () => {
        console.log("loggged in");
       
 
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Login failed");
-    }
-  };
+  } catch (err: unknown) {
+  const axiosError = err as AxiosError<{ message?: string }>;
+
+  if (axiosError.response) {
+    setError(axiosError.response.data?.message || "Login failed");
+  } else {
+    setError("Login failed");
+  }
+}
+};
+
+  
 
   return (
   
@@ -160,6 +169,7 @@ const handleLogin = async () => {
         <div className="absolute -top-2 -right-8 w-4 h-4 bg-blue-500/30 rounded-full animate-bounce" style={{ animationDelay: "2s", animationDuration: "4s" }}></div>
         <div className="absolute -bottom-6 -right-2 w-6 h-6 bg-pink-500/20 rounded-full animate-bounce" style={{ animationDelay: "0.5s", animationDuration: "3.5s" }}></div>
       </div>
+
     </div>
   );
 }
