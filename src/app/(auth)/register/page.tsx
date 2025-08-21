@@ -39,7 +39,7 @@ export default function RegisterPage() {
     try {
       await axiosClient.post("/auth/register", formData);
 
-      // Redirect based on role
+      
       if (formData.role === "jobprovider") router.push("/login");
       else if (formData.role === "admin") router.push("/login");
       else if (formData.role === "jobseeker") router.push("/login");
