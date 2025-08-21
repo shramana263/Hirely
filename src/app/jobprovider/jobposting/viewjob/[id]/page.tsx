@@ -10,6 +10,7 @@ export default function ViewJobPage() {
   const params = useParams();
   const jobId = params?.id as string;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [job, setJob] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 

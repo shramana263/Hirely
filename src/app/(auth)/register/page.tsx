@@ -66,7 +66,7 @@ export default function RegisterPage() {
     }
   };
 
-  const getRoleLabel = (role:String) => {
+  const getRoleLabel = (role:string) => {
     switch (role) {
       case "jobseeker": return "Job Seeker";
       case "admin": return "Administrator";
@@ -255,3 +255,12 @@ export default function RegisterPage() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+

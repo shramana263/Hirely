@@ -18,8 +18,8 @@ export default function CreateJobForm() {
     max_salary: "",
   });
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // const [loading, setLoading] = useState(false);
+  // const [error, setError] = useState<string | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -38,7 +38,9 @@ const handleSubmit = async (e: React.FormEvent) => {
     });
 
     alert("Job created successfully!");
+    console.log(response.data);
     router.push("/jobprovider/jobposting");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     if (error.response) {
       alert(error.response.data.message || "Failed to create job");

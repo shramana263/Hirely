@@ -15,6 +15,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState(false);
 
 
@@ -153,7 +154,7 @@ const handleLogin = async () => {
           
           <div className="text-center">
             <p className="text-gray-300 text-sm">
-              Don't have an account?{" "}
+              Donot have an account?{" "}
               <button
                 onClick={() => router.push("/register")}
                 className="text-purple-400 hover:text-purple-300 font-semibold transition-colors duration-200 hover:underline"

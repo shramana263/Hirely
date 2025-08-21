@@ -14,6 +14,7 @@ export default function ProviderProfile() {
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [showAllFields, setShowAllFields] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [formData, setFormData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
