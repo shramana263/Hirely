@@ -1,91 +1,45 @@
 "use client";
 
-import { useState } from "react";
-import { Pencil, Trash2, Plus, Eye } from "lucide-react"; 
-
+import { useEffect, useState } from "react";
+import { Pencil, Trash2, Plus, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
-import EditJobModal from "./updatejob";
 
- interface Job {
-  id: number;
-  title: string;
-  company: string;
-  location: string;
-  postedOn: string;
+import EditJobModal from "./updatejob";
+import axiosClient from "@/library/axiosClient";
+
+interface Job {
+  _id: string;
+  name: string;
+  job_type: string;
+  address: string;
+  min_salary: number;
+  max_salary: number;
+  created_at: string;
 }
 
 export default function JobPostingsPage() {
   const router = useRouter();
-  const [jobs, setJobs] = useState<Job[]>([
-    {
-      id: 1,
-      title: "Frontend Developer",
-      company: "Robin Studios",
-      location: "Kolkata, India",
-      postedOn: "31st July 2025",
-    },
-    {
-      id: 2,
-      title: "Backend Developer",
-      company: "Tech Innovators",
-      location: "Delhi, India",
-      postedOn: "28th July 2025",
-    },
-    {
-      id: 3,
-      title: "Full Stack Developer",
-      company: "Creative Solutions",
-      location: "Mumbai, India",
-      postedOn: "25th July 2025",
-    },
-    {
-      id: 4,
-      title: "UI/UX Designer",
-      company: "Design Hub",
-      location: "Bangalore, India",
-      postedOn: "20th July 2025",
-    },
-  ]);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [currentJob, setCurrentJob] = useState<Job | null>(null);
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const res = await axiosClient.get("/jobs");
+        setJobs(res.data.data || []);
+      } catch (error) {
+        console.error("Failed to fetch jobs", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchJobs();
+  }, []);
 
-  const openEditModal = (job: Job) => {
-    setCurrentJob(job);
-    setIsEditModalOpen(true);
-  };
+  if (loading) {
+    return <p className="p-6">Loading jobs...</p>;
+  }
 
-  const closeEditModal = () => {
-    setIsEditModalOpen(false);
-    setCurrentJob(null);
-  };
-
-
-  const handleFormChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setCurrentJob((prev) =>
-      prev ? { ...prev, [name]: value } : prev
-    );
-  };
-  
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!currentJob) return;
-
-    setJobs((prevJobs) =>
-      prevJobs.map((job) => (job.id === currentJob.id ? currentJob : job))
-    );
-    closeEditModal();
-  };
-
-
-  const handleDelete = (id: number) => {
-    if (confirm("Are you sure you want to delete this job?")) {
-      setJobs((prev) => prev.filter((job) => job.id !== id));
-    }
-  };
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6 text-gray-900 dark:text-gray-100">
       <div className="max-w-6xl mx-auto">
@@ -102,59 +56,48 @@ export default function JobPostingsPage() {
         <div className="grid grid-cols-1 gap-6">
           {jobs.map((job) => (
             <div
-              key={job.id}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-5 flex flex-col justify-between border border-gray-200 dark:border-gray-700 hover:shadow-lg transition"
+              key={job._id}
+              className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-5 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition"
             >
-              <div>
-                <h2 className="text-2xl font-semibold text-blue-700 dark:text-blue-400 mb-1">
-                  {job.title}
-                </h2>
-                <p className="text-xl text-gray-600 dark:text-gray-300">
-                  {job.company}
-                </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {job.location}
-                </p>
-              </div>
+              <h2 className="text-2xl font-semibold text-blue-700 dark:text-blue-400">
+                {job.name}
+              </h2>
+              <p className="text-gray-600 dark:text-gray-300">{job.job_type}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {job.address}
+              </p>
+              <p className="text-sm text-gray-500 mt-2">
+                ₹{job.min_salary} – ₹{job.max_salary}
+              </p>
+              <p className="text-xs text-gray-400 mt-1">
+                Posted on {new Date(job.created_at).toLocaleDateString()}
+              </p>
 
-              <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-                <span className="font-semibold">Posted on:</span> {job.postedOn}
-              </div>
               <div className="mt-4 flex gap-6">
                 <button
-                  onClick={() => openEditModal(job)}
-                  title="Edit"
-                  className="flex items-center gap-1 text-blue-600 hover:text-blue-800 transition transform hover:scale-105 active:scale-95"
+                  onClick={() =>
+                    router.push(`/jobprovider/jobposting/viewjob/${job._id}`)
+                  }
+                  className="flex items-center gap-1 text-green-600 hover:text-green-800"
                 >
-                  <Pencil size={18} />
-                  <span className="text-sm">Edit</span>
-                </button>
-
-                <button
-                  onClick={() => handleDelete(job.id)}
-                  title="Delete"
-                  className="flex items-center gap-1 text-red-600 hover:text-red-800 transition transform hover:scale-105 active:scale-95"
-                >
-                  <Trash2 size={20} />
-                  <span className="text-sm">Delete</span>
+                  <Eye size={18} /> View
                 </button>
                 <button
-                  onClick={() => router.push(`/jobprovider/jobposting/viewjob`)}
-                  title="View Job"
-                  className="flex items-center gap-1 text-green-600 hover:text-green-800 transition transform hover:scale-105 active:scale-95"
+                  onClick={() => console.log("Edit", job._id)}
+                  className="flex items-center gap-1 text-blue-600 hover:text-blue-800"
                 >
-                  <Eye size={18} />
-                  <span className="text-sm">View</span>
+                  <Pencil size={18} /> Edit
+                </button>
+                <button
+                  onClick={() => console.log("Delete", job._id)}
+                  className="flex items-center gap-1 text-red-600 hover:text-red-800"
+                >
+                  <Trash2 size={18} /> Delete
                 </button>
               </div>
             </div>
           ))}
         </div>
-        <EditJobModal
-          isOpen={isEditModalOpen}
-          onClose={closeEditModal}
-          onFormChange={handleFormChange}
-          onSubmit={handleSubmit} job={null}        />
       </div>
     </div>
   );
