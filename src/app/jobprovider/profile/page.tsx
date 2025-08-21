@@ -11,7 +11,20 @@ import axiosClient from "@/library/axiosClient";
 export default function ProviderProfile() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [showAllFields, setShowAllFields] = useState(false);
-  const [formData, setFormData] = useState(null);
+  interface ProviderProfileData {
+    name: string;
+    email: string;
+    industry: string;
+    establishment: string;
+    contact_no: string;
+    website_link: string;
+    address: string;
+    country: string;
+    description: string;
+    [key: string]: any;
+  }
+
+  const [formData, setFormData] = useState<ProviderProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

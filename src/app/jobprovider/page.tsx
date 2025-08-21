@@ -12,7 +12,6 @@ import {
   Pie,
   Cell,
 } from "recharts";
-// import ThemeToggle from "./components/ThemeToggle/page";
 
 const data = [
   { month: "Jan", Applications: 30, Shortlisted: 10, Rejected: 5 },
@@ -193,3 +192,4 @@ export default function Dashboard() {
     </div>
   );
 }
+

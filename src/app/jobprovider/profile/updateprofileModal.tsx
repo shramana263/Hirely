@@ -178,6 +178,7 @@ export default function EditProviderModal({
               </Button>
               <Button
                 type="submit"
+                // onClick={onClose}
                 className="min-w-[100px] bg-blue-600 hover:bg-blue-700 text-white"
               >
                 Save Changes

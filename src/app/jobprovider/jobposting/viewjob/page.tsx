@@ -58,7 +58,14 @@ Requirements:
           </div>
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-between">
+          <Button
+            onClick={() => router.push("/jobprovider/jobposting/viewjob/viewapplicants")}
+            className="bg-green-600 hover:bg-green-700 text-white"
+          >
+            View Applicants
+          </Button>
+
           <Button
             onClick={() => router.back()}
             className="bg-blue-600 hover:bg-blue-700 text-white"

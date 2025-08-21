@@ -44,7 +44,7 @@ export default function RegisterPage() {
     <div className="flex flex-col items-center justify-center h-screen">
       <h2 className="text-3xl mb-4">Register</h2>
 
-      <select
+      <select         
         name="role"
         value={formData.role}
         onChange={handleChange}
