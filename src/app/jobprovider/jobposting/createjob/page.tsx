@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import axiosClient from "@/library/axiosClient";
 
 export default function CreateJobForm() {
   const router = useRouter();
@@ -17,21 +18,35 @@ export default function CreateJobForm() {
     max_salary: "",
   });
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    console.log("Submitted job data:", form);
+  try {
+    const response = await axiosClient.post("/jobs", {
+      ...form,
+      min_salary: Number(form.min_salary),
+      max_salary: Number(form.max_salary),
+    });
+
     alert("Job created successfully!");
-
     router.push("/jobprovider/jobposting");
-  };
-
+  } catch (error: any) {
+    if (error.response) {
+      alert(error.response.data.message || "Failed to create job");
+    } else {
+      alert("Network error, please try again.");
+    }
+  }
+};
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6 sm:p-10 text-gray-900 dark:text-gray-100">
       <div className="max-w-3xl mx-auto w-full">
