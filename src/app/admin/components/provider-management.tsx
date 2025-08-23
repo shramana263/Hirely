@@ -1,0 +1,247 @@
+"use client"
+
+import { useState } from "react"
+import type { ColumnDef } from "@tanstack/react-table"
+import { DataTable } from "./data-table"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { ConfirmationModal } from "./confirmation-modal"
+import { MoreHorizontal, ArrowUpDown, Eye, CheckCircle, X, Building } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+
+export interface Provider {
+  id: string
+  name: string
+  company: string
+  email: string
+  status: "approved" | "pending" | "rejected"
+  joinDate: string
+  jobPostings: number
+}
+
+const dummyProviders: Provider[] = [
+  {
+    id: "1",
+    name: "Alice Johnson",
+    company: "TechCorp Inc.",
+    email: "alice@techcorp.com",
+    status: "approved",
+    joinDate: "2024-01-10",
+    jobPostings: 5,
+  },
+  {
+    id: "2",
+    name: "Bob Smith",
+    company: "StartupXYZ",
+    email: "bob@startupxyz.com",
+    status: "pending",
+    joinDate: "2024-01-18",
+    jobPostings: 0,
+  },
+  {
+    id: "3",
+    name: "Carol Davis",
+    company: "MegaCorp Ltd.",
+    email: "carol@megacorp.com",
+    status: "approved",
+    joinDate: "2024-01-05",
+    jobPostings: 12,
+  },
+  {
+    id: "4",
+    name: "David Wilson",
+    company: "InnovateLab",
+    email: "david@innovatelab.com",
+    status: "rejected",
+    joinDate: "2024-01-15",
+    jobPostings: 0,
+  },
+  {
+    id: "5",
+    name: "Eva Brown",
+    company: "FutureTech",
+    email: "eva@futuretech.com",
+    status: "pending",
+    joinDate: "2024-01-20",
+    jobPostings: 0,
+  },
+]
+
+export function ProviderManagement() {
+  const [providers, setProviders] = useState<Provider[]>(dummyProviders)
+  const [confirmationModal, setConfirmationModal] = useState<{
+    open: boolean
+    title: string
+    description: string
+    onConfirm: () => void
+  }>({
+    open: false,
+    title: "",
+    description: "",
+    onConfirm: () => {},
+  })
+
+  const handleProviderAction = (providerId: string, action: "approve" | "reject") => {
+    setProviders(
+      providers.map((provider) =>
+        provider.id === providerId ? { ...provider, status: action === "approve" ? "approved" : "rejected" } : provider,
+      ),
+    )
+  }
+
+  const showConfirmation = (title: string, description: string, onConfirm: () => void) => {
+    setConfirmationModal({
+      open: true,
+      title,
+      description,
+      onConfirm,
+    })
+  }
+
+  const handleApprove = (provider: Provider) => {
+    showConfirmation(
+      "Approve Provider",
+      `Are you sure you want to approve ${provider.name} from ${provider.company}?`,
+      () => handleProviderAction(provider.id, "approve"),
+    )
+  }
+
+  const handleReject = (provider: Provider) => {
+    showConfirmation(
+      "Reject Provider",
+      `Are you sure you want to reject ${provider.name} from ${provider.company}?`,
+      () => handleProviderAction(provider.id, "reject"),
+    )
+  }
+
+  const columns: ColumnDef<Provider>[] = [
+    {
+      accessorKey: "name",
+      header: ({ column }) => (
+        <Button
+           
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="text-primary-foreground hover:text-primary-foreground hover:bg-primary/80"
+        >
+          Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+    },
+    {
+      accessorKey: "company",
+      header: ({ column }) => (
+        <Button
+           
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="text-primary-foreground hover:text-primary-foreground hover:bg-primary/80"
+        >
+          Company
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const status = row.getValue("status") as string
+        return (
+          <Badge >
+            {status}
+          </Badge>
+        )
+      },
+    },
+    {
+      accessorKey: "jobPostings",
+      header: ({ column }) => (
+        <Button
+           
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="text-primary-foreground hover:text-primary-foreground hover:bg-primary/80"
+        >
+          Job Postings
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+    },
+    {
+      accessorKey: "joinDate",
+      header: ({ column }) => (
+        <Button
+           
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="text-primary-foreground hover:text-primary-foreground hover:bg-primary/80"
+        >
+          Join Date
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => {
+        const provider = row.original
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button  className="h-8 w-12 p-0">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>
+                <Eye className="mr-2 h-4 w-4" />
+                View Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Building className="mr-2 h-4 w-4" />
+                Monitor Job Postings
+              </DropdownMenuItem>
+              {provider.status === "pending" && (
+                <>
+                  <DropdownMenuItem onClick={() => handleApprove(provider)}>
+                    <CheckCircle className="mr-2 h-4 w-4" />
+                    Approve Provider
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleReject(provider)}>
+                    <X className="mr-2 h-4 w-4" />
+                    Reject Provider
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )
+      },
+    },
+  ]
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Provider Management</CardTitle>
+          <CardDescription>Manage service providers, approve applications, and monitor job postings.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <DataTable columns={columns} data={providers} searchKey="company" searchPlaceholder="Search providers..." />
+        </CardContent>
+      </Card>
+
+      <ConfirmationModal
+        open={confirmationModal.open}
+        onOpenChange={(open) => setConfirmationModal((prev) => ({ ...prev, open }))}
+        title={confirmationModal.title}
+        description={confirmationModal.description}
+        onConfirm={() => {
+          confirmationModal.onConfirm()
+          setConfirmationModal((prev) => ({ ...prev, open: false }))
+        }}
+      />
+    </div>
+  )
+}

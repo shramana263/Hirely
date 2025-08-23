@@ -6,6 +6,7 @@ import { Menu, X } from "lucide-react";
 
 import { useRouter } from "next/navigation";
 import axiosClient from "@/library/axiosClient";
+import { toast } from "sonner";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,7 +18,7 @@ export default function Sidebar() {
     { label: "Profile", path: "/jobprovider/profile" },
     { label: "Job Appliers", path: "/jobprovider/appliers" },
     { label: "Job Postings", path: "/jobprovider/jobposting" },
-    { label: "Shortlisted", path: "/jobprovider/shortlisted" },
+    { label: "Shortlisted", path: "/jobprovider/filters" },
 
   ];
 
@@ -82,7 +83,7 @@ export default function Sidebar() {
                 console.error("Logout error:", err);
               }
 
-              alert("Logout successfully");
+              toast("Logout successfully");
               setIsOpen(false);
               router.push("/");
             }}
