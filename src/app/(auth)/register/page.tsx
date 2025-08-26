@@ -32,14 +32,14 @@ export default function RegisterPage() {
   const handleRegister = async () => {
     if (!formData.name || !formData.email || !formData.password) {
       setError("All fields are required.");
-      toast.error("All fields are required.");
+      toast("All fields are required.");
       return;
     }
 
     setLoading(true);
     try {
       await axiosClient.post("/auth/register", formData);
-
+        toast.success("Registration successful! Please login.");
       // Redirect based on role
       if (formData.role === "jobprovider") router.push("/login");
       else if (formData.role === "admin") router.push("/login");

@@ -83,7 +83,7 @@ export default function Sidebar() {
                 console.error("Logout error:", err);
               }
 
-              toast("Logout successfully");
+              toast.success("Logout successfully");
               setIsOpen(false);
               router.push("/");
             }}

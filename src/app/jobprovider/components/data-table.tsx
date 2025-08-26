@@ -61,8 +61,8 @@ export function DataTable<TData, TValue>({
     <div className="space-y-4">
       {/* Search */}
       {searchKey && (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center sm:space-x-2 mb-2">
-          <div className="relative flex-1 w-full max-w-sm">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center sm:space-x-2 mb-2 cursor-pointer hover:border-amber-100">
+          <div className="relative flex-1 w-full max-w-sm border-4 ">
             <Input
               placeholder={searchPlaceholder}
               value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
@@ -75,7 +75,7 @@ export function DataTable<TData, TValue>({
 
       {/* Table wrapper for horizontal scrolling on mobile */}
       <div className="overflow-x-auto rounded-md border bg-card">
-        <Table className="min-w-[800px] sm:min-w-full">
+        <Table className="min-w-[500px] sm:min-w-full">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="bg-gray-100 dark:bg-gray-700">
@@ -115,16 +115,16 @@ export function DataTable<TData, TValue>({
       </div>
 
       {/* Pagination */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-2 space-y-2 sm:space-y-0">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-6 space-y-2 sm:space-y-0 ">
         <div className="text-sm text-muted-foreground">
           Showing {table.getState().pagination.pageIndex * pageSize + 1} to{" "}
           {Math.min((table.getState().pagination.pageIndex + 1) * pageSize, table.getFilteredRowModel().rows.length)}{" "}
           of {table.getFilteredRowModel().rows.length} entries
         </div>
 
-        <div className="flex flex-wrap items-center gap-1">
+        <div className="flex flex-wrap items-center  gap-2 cursor-pointer">
           <Button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
-            <ChevronLeft className="h-4 w-4 mr-1" /> Previous
+            <ChevronLeft className="h-1 w-4 mr-1" /> Previous
           </Button>
 
           {[...Array(totalPages)].map((_, i) => (
@@ -138,7 +138,7 @@ export function DataTable<TData, TValue>({
           ))}
 
           <Button onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-            Next <ChevronRight className="h-4 w-4 ml-1" />
+            Next <ChevronRight className="h-1 w-4 ml-5 " />
           </Button>
         </div>
       </div>

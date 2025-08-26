@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import EditProviderModal from "./updateprofileModal";
 import axiosClient from "@/library/axiosClient";
 import { isAxiosError } from "axios";
+import { toast } from "sonner";
 
 export default function ProviderProfile() {
 
@@ -82,7 +83,7 @@ export default function ProviderProfile() {
     await updateProfile();
     await fetchProfile();
     setShowAllFields(true);
-    alert("Profile updated successfully!");
+    toast.success("Profile updated successfully!");
     setIsEditModalOpen(false);
   };
   if (loading) return <div className="p-8 text-center">Loading...</div>;

@@ -1,9 +1,9 @@
-
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axiosClient from "@/library/axiosClient";
+import {  toast } from "sonner";
 
 export default function CreateJobForm() {
   const router = useRouter();
@@ -27,28 +27,59 @@ export default function CreateJobForm() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  try {
-    const response = await axiosClient.post("/jobs", {
-      ...form,
-      min_salary: Number(form.min_salary),
-      max_salary: Number(form.max_salary),
-    });
+    try {
+      const response = await axiosClient.post("/jobs", {
+        ...form,
+        min_salary: Number(form.min_salary),
+        max_salary: Number(form.max_salary),
+      });
 
-    alert("Job created successfully!");
-    console.log(response.data);
-    router.push("/jobprovider/jobposting");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    if (error.response) {
-      alert(error.response.data.message || "Failed to create job");
-    } else {
-      alert("Network error, please try again.");
+      alert("Job created successfully!");
+      console.log(response.data);
+      router.push("/jobprovider/jobposting");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error.response) {
+        alert(error.response.data.message || "Failed to create job");
+      } else {
+        alert("Network error, please try again.");
+      }
     }
-  }
-};
+  };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [inputForm, setInputForm] = useState({
+    min_salary: "",
+    max_salary: "",
+  });
+  const [error, setError] = useState("");
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setForm((prev) => {
+      const updatedForm = { ...prev, [name]: value };
+
+      // Validation check
+      if (
+        updatedForm.min_salary &&
+        updatedForm.max_salary &&
+        Number(updatedForm.max_salary) <= Number(updatedForm.min_salary)
+      ) {
+        setError("Maximum salary must be greater than minimum salary.");
+        toast.error("Maximum salary must be greater than minimum salary.", {
+          description: "Please check your salary inputs.",
+        });
+      } else {
+        setError("");
+      }
+
+      return updatedForm;
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6 sm:p-10 text-gray-900 dark:text-gray-100">
       <div className="max-w-3xl mx-auto w-full">
@@ -137,11 +168,12 @@ const handleSubmit = async (e: React.FormEvent) => {
               name="max_salary"
               id="max_salary"
               value={form.max_salary}
-              onChange={handleChange}
+              onChange={handleInputChange}
               required
               min={0}
               className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
             />
+            {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
           </div>
 
           <div>
