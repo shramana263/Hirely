@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { DataTable } from "./data-table"
 import { Button } from "@/components/ui/button"
@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { UserModal } from "./user-modal"
 import { MoreHorizontal, ArrowUpDown, Eye, Edit, Ban, CheckCircle } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+
 
 export interface User {
   id: string
@@ -19,119 +20,35 @@ export interface User {
   lastLogin: string
 }
 
-const dummyUsers: User[] = [
-  {
-    id: "1",
-    name: "John Doe",
-    email: "john.doe@example.com",
-    status: "active",
-    joinDate: "2024-01-15",
-    lastLogin: "2024-01-20",
-  },
-  {
-    id: "2",
-    name: "Jane Smith",
-    email: "jane.smith@example.com",
-    status: "blocked",
-    joinDate: "2024-01-10",
-    lastLogin: "2024-01-18",
-  },
-  {
-    id: "3",
-    name: "Mike Johnson",
-    email: "mike.johnson@example.com",
-    status: "pending",
-    joinDate: "2024-01-20",
-    lastLogin: "Never",
-  },
-  {
-    id: "4",
-    name: "Sarah Wilson",
-    email: "sarah.wilson@example.com",
-    status: "active",
-    joinDate: "2024-01-12",
-    lastLogin: "2024-01-21",
-  },
-  {
-    id: "5",
-    name: "David Brown",
-    email: "david.brown@example.com",
-    status: "active",
-    joinDate: "2024-01-08",
-    lastLogin: "2024-01-19",
-  },
-  {
-    id: "6",
-    name: "David Brown",
-    email: "david.brown@example.com",
-    status: "active",
-    joinDate: "2024-01-08",
-    lastLogin: "2024-01-19",
-  },{
-    id: "7",
-    name: "David Brown",
-    email: "david.brown@example.com",
-    status: "active",
-    joinDate: "2024-01-08",
-    lastLogin: "2024-01-19",
-  },{
-    id: "8",
-    name: "David Brown",
-    email: "david.brown@example.com",
-    status: "active",
-    joinDate: "2024-01-08",
-    lastLogin: "2024-01-19",
-  },{
-    id: "9",
-    name: "David Brown",
-    email: "david.brown@example.com",
-    status: "active",
-    joinDate: "2024-01-08",
-    lastLogin: "2024-01-19",
-  },{
-    id: "10",
-    name: "David Brown",
-    email: "david.brown@example.com",
-    status: "active",
-    joinDate: "2024-01-08",
-    lastLogin: "2024-01-19",
-  },{
-    id: "11",
-    name: "David Brown",
-    email: "david.brown@example.com",
-    status: "active",
-    joinDate: "2024-01-08",
-    lastLogin: "2024-01-19",
-  },{
-    id: "12",
-    name: "David Brown",
-    email: "david.brown@example.com",
-    status: "active",
-    joinDate: "2024-01-08",
-    lastLogin: "2024-01-19",
-  },{
-    id: "13",
-    name: "David Brown",
-    email: "david.brown@example.com",
-    status: "active",
-    joinDate: "2024-01-08",
-    lastLogin: "2024-01-19",
-  },{
-    id: "14",
-    name: "David Brown",
-    email: "david.brown@example.com",
-    status: "active",
-    joinDate: "2024-01-08",
-    lastLogin: "2024-01-19",
-  },
- 
-]
+
 
 export function UserManagement() {
-  const [users, setUsers] = useState<User[]>(dummyUsers)
-  const [selectedUser, setSelectedUser] = useState<User | null>(null)
+  const [users, setUsers] = useState<User[]>([])
+    const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
   const [modalMode, setModalMode] = useState<"view" | "edit">("view")
+
+  
+  useEffect(() => {
+    async function fetchUsers() {
+      const accessToken = sessionStorage.getItem("accessToken");
+      const res = await fetch("http://localhost:6008/api/admin/allusers", {
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    )
+      const data = await res.json()
+      if (data.success) {
+        console.log(data.data);
+        
+        setUsers(data.data)
+      }
+    }
+    fetchUsers()
+  }, [])
+
 
   const handleUserAction = (userId: string, action: "block" | "unblock") => {
     setUsers(
