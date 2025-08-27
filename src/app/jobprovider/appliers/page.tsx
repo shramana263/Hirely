@@ -112,7 +112,7 @@ const applicants = [
     cgpa: "9.2",
     experience_year: "2 Years",
     email: "anjali.rao@example.com",
-    status: "Active",
+    status: "Inactive",
     job_name: "Frontend Developer",
   },
 ];
@@ -154,10 +154,8 @@ const columns: ColumnDef<typeof applicants[0]>[] = [
       const applicant = row.original;
       return (
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              className="h-8 w-8 p-0 hover:bg-transparent focus-visible:ring-0"
-            >
+          <DropdownMenuTrigger>
+            <Button className="h-8 w-12 p-0">
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -202,7 +200,7 @@ export default function ApplicantsPage() {
           columns={columns}
           data={applicants}
           searchKey="first_name"
-          pageSize={4} // ✅ show 4 rows per page
+          pageSize={4} 
         />
       </div>
     </div>

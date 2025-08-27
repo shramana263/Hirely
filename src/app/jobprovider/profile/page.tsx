@@ -9,6 +9,8 @@ import EditProviderModal from "./updateprofileModal";
 import axiosClient from "@/library/axiosClient";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+
 
 export default function ProviderProfile() {
 
@@ -19,8 +21,8 @@ export default function ProviderProfile() {
   const [formData, setFormData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-
+ const router = useRouter();
+ 
   async function fetchProfile() {
     try {
       const accessToken = sessionStorage.getItem("accessToken");
@@ -90,9 +92,12 @@ export default function ProviderProfile() {
   if (error) return <div className="p-8 text-center text-red-500">{error}</div>;
   if (!formData) return null;
 
+
   return (
 
     <div className="relative min-h-screen px-4 sm:px-6 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+   
+
       <Image
         src="/images/edit.png"
         alt="Background"
@@ -117,7 +122,9 @@ export default function ProviderProfile() {
         className="relative max-w-5xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-4 sm:p-8 border border-gray-200 dark:border-gray-700 transition-all duration-300"
       >
         <div className="flex flex-col md:flex-row items-start justify-between gap-6 md:gap-8 mb-8 md:mb-10">
-
+   <div className="" onClick={() => router.push('/jobprovider')}>
+        jobprovider
+      </div>
           <motion.div
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}

@@ -110,8 +110,7 @@ const columns: ColumnDef<typeof applicants[0]>[] = [
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              className="h-8 w-8 p-0 hover:bg-transparent focus-visible:ring-0"
+             <Button className="h-8 w-12 p-0 hover:bg-transparent focus-visible:ring-0"
             >
               <MoreHorizontal className="h-4 w-4" />
             </Button>
@@ -157,7 +156,7 @@ export default function ApplicantsPage() {
           columns={columns}
           data={applicants}
           searchKey="first_name"
-          pageSize={4} // ✅ show 4 per page
+          pageSize={4}
         />
       </div>
     </div>

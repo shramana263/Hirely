@@ -3,6 +3,7 @@
 import { Menu, Bell, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import ThemeToggle from "@/app/jobprovider/components/ThemeToggle/page"
 
 interface TopNavbarProps {
   sidebarCollapsed: boolean
@@ -30,6 +31,7 @@ export function TopNavbar({ sidebarCollapsed, setSidebarCollapsed }: TopNavbarPr
             <Bell className="h-5 w-5" />
           </Button>
           <Avatar>
+              <ThemeToggle />
             <AvatarImage src="/admin-avatar.png" alt="Admin" />
             <AvatarFallback>
               <User className="h-4 w-4" />
