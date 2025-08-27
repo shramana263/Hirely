@@ -21,17 +21,17 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
-           <Toaster richColors position="top-right" />
+          <Toaster richColors position="top-right" />
         </ThemeProvider>
       </body>
     </html>

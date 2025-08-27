@@ -37,15 +37,15 @@ export default function CreateJobForm() {
         max_salary: Number(form.max_salary),
       });
 
-      alert("Job created successfully!");
+      toast.success("Job created successfully!");
       console.log(response.data);
       router.push("/jobprovider/jobposting");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (error.response) {
-        alert(error.response.data.message || "Failed to create job");
+        toast.error(error.response.data.message || "Failed to create job");
       } else {
-        alert("Network error, please try again.");
+        toast.error("Network error, please try again.");
       }
     }
   };
