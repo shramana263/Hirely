@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { Pencil, Trash2, Plus, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-import EditJobModal from "./updatejob";
 import axiosClient from "@/library/axiosClient";
+// import EditJobModal from "./updatejob";
 
 interface Job {
   _id: string;
@@ -16,6 +16,7 @@ interface Job {
   max_salary: number;
   created_at: string;
 }
+
 
 export default function JobPostingsPage() {
   const router = useRouter();
@@ -83,7 +84,7 @@ export default function JobPostingsPage() {
                   <Eye size={18} /> View
                 </button>
                 <button
-                  onClick={() => console.log("Edit", job._id)}
+                  //  onClick={() => openEditModal(job)}
                   className="flex items-center gap-1 text-blue-600 hover:text-blue-800"
                 >
                   <Pencil size={18} /> Edit
@@ -98,6 +99,7 @@ export default function JobPostingsPage() {
             </div>
           ))}
         </div>
+         
       </div>
     </div>
   );

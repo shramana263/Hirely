@@ -1,5 +1,7 @@
 "use client";
 
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 
@@ -70,7 +72,7 @@ export default function EditJobModal({
         <form onSubmit={onSubmit} className="space-y-5">
           <div>
             <label className="block mb-1 font-semibold">Job Title</label>
-            <input
+            <Input
               name="title"
               value={job.title}
               onChange={onFormChange}
@@ -81,7 +83,7 @@ export default function EditJobModal({
 
           <div>
             <label className="block mb-1 font-semibold">Company</label>
-            <input
+            <Input
               name="company"
               value={job.company}
               onChange={onFormChange}
@@ -92,7 +94,7 @@ export default function EditJobModal({
 
           <div>
             <label className="block mb-1 font-semibold">Location</label>
-            <input
+            <Input
               name="location"
               value={job.location}
               onChange={onFormChange}
@@ -103,7 +105,7 @@ export default function EditJobModal({
 
           <div>
             <label className="block mb-1 font-semibold">Posted On</label>
-            <input
+            <Input
               name="postedOn"
               value={job.postedOn}
               onChange={onFormChange}
@@ -126,7 +128,7 @@ export default function EditJobModal({
 
           <div>
             <label className="block mb-1 font-semibold">Job Description</label>
-            <textarea
+            <Textarea
               name="description"
               value={job.description}
               onChange={onFormChange}
@@ -138,7 +140,7 @@ export default function EditJobModal({
 
           <div>
             <label className="block mb-1 font-semibold">Requirements</label>
-            <textarea
+            <Textarea
               name="requirement"
               value={job.requirement}
               onChange={onFormChange}
@@ -150,7 +152,7 @@ export default function EditJobModal({
 
           <div>
             <label className="block mb-1 font-semibold">Minimum Salary (INR)</label>
-            <input
+            <Input
               name="min_salary"
               type="number"
               min={0}
@@ -163,7 +165,7 @@ export default function EditJobModal({
 
           <div>
             <label className="block mb-1 font-semibold">Maximum Salary (INR)</label>
-            <input
+            <Input
               name="max_salary"
               type="number"
               min={0}

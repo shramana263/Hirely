@@ -1,11 +1,12 @@
-"use client";
 
+"use client";
 
 import { useState } from "react";
 import { Eye, EyeOff, Mail, Lock, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import axiosClient from "@/library/axiosClient";
 import { AxiosError } from "axios";
+import {  toast } from "sonner";
 
 
 export default function LoginPage() {
@@ -14,55 +15,49 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const handleLogin = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axiosClient.post("/auth/login", { email, password });
+      const userRole = response.data.user.role;
+      const token = response.data.accessToken;
 
-const handleLogin = async () => {
-  try {
-    const response = await axiosClient.post("/auth/login", { email, password });
-    const userRole = response.data.user.role;
-    const token = response.data.accessToken; 
-    sessionStorage.setItem("accessToken", token); 
-    console.log(response.data)
+      sessionStorage.setItem("accessToken", token);
 
-    if (userRole === "jobseeker") router.push("/jobprovider");
-    
-    else if (userRole === "admin") router.push("/jobprovider");
- 
-    else if (userRole === "jobprovider") router.push("/jobprovider");
-       console.log(response.data.user.role);
-       console.log("loggged in");
-      
+      toast.success(`Welcome back, ${response.data.user.name || "User"}!`, {
+        description: "Login Successful 🎉",
+      });
 
-  } catch (err: unknown) {
-  const axiosError = err as AxiosError<{ message?: string }>;
+      if (userRole === "jobseeker") router.push("/jobprovider");
+      else if (userRole === "admin") router.push("/jobprovider");
+      else if (userRole === "jobprovider") router.push("/jobprovider");
+    } catch (err: unknown) {
+      const axiosError = err as AxiosError<{ message?: string }>;
+      const message = axiosError.response?.data?.message || "Login failed";
 
-  if (axiosError.response) {
-    setError(axiosError.response.data?.message || "Login failed");
-  } else {
-    setError("Login failed");
-  }
-}
-};
-
-  
+      toast.error(message, {
+        description: "Login Failed ❌",
+      });
+      setIsLoading(false);
+    }
+  };
 
   return (
-  
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
 
+      {/* Background floating circles */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse" style={{ animationDelay: "2s" }}></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse" style={{ animationDelay: "4s" }}></div>
       </div>
 
+      <div className="relative z-10 w-full max-w-sm">
+        <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl p-6 shadow-2xl">
 
-  <div className="relative z-10 w-full max-w-sm">
-
-  <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl p-6 shadow-2xl">
-
+          {/* Header */}
           <div className="text-center mb-6">
             <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-blue-500 rounded-xl mx-auto mb-3 flex items-center justify-center">
               <Lock className="w-7 h-7 text-white" />
@@ -71,9 +66,9 @@ const handleLogin = async () => {
             <p className="text-gray-300 text-base">Sign in to your account</p>
           </div>
 
-
+          {/* Form */}
           <div className="space-y-5">
-
+            {/* Email */}
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <Mail className="h-5 w-5 text-gray-400 group-focus-within:text-purple-400 transition-colors duration-200" />
@@ -87,7 +82,7 @@ const handleLogin = async () => {
               />
             </div>
 
-            
+            {/* Password */}
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <Lock className="h-5 w-5 text-gray-400 group-focus-within:text-purple-400 transition-colors duration-200" />
@@ -112,14 +107,7 @@ const handleLogin = async () => {
               </button>
             </div>
 
-            
-            {error && (
-              <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 text-red-300 text-sm animate-in slide-in-from-top-2 duration-300">
-                {error}
-              </div>
-            )}
-
-            
+            {/* Submit Button */}
             <button
               onClick={handleLogin}
               disabled={isLoading}
@@ -135,7 +123,7 @@ const handleLogin = async () => {
               )}
             </button>
 
-            
+            {/* Forgot Password */}
             <div className="text-center">
               <a href="#" className="text-gray-300 hover:text-white text-sm transition-colors duration-200">
                 Forgot your password?
@@ -143,17 +131,17 @@ const handleLogin = async () => {
             </div>
           </div>
 
-          
+          {/* Divider */}
           <div className="flex items-center my-6">
             <div className="flex-1 border-t border-white/10"></div>
             <span className="px-4 text-gray-400 text-sm">or</span>
             <div className="flex-1 border-t border-white/10"></div>
           </div>
 
-          
+          {/* Sign up */}
           <div className="text-center">
             <p className="text-gray-300 text-sm">
-              Don't have an account?{" "}
+              Don’t have an account?{" "}
               <button
                 onClick={() => router.push("/register")}
                 className="text-purple-400 hover:text-purple-300 font-semibold transition-colors duration-200 hover:underline"
@@ -164,12 +152,11 @@ const handleLogin = async () => {
           </div>
         </div>
 
-        
+        {/* Floating small circles */}
         <div className="absolute -top-4 -left-4 w-8 h-8 bg-purple-500/20 rounded-full animate-bounce" style={{ animationDelay: "1s", animationDuration: "3s" }}></div>
         <div className="absolute -top-2 -right-8 w-4 h-4 bg-blue-500/30 rounded-full animate-bounce" style={{ animationDelay: "2s", animationDuration: "4s" }}></div>
         <div className="absolute -bottom-6 -right-2 w-6 h-6 bg-pink-500/20 rounded-full animate-bounce" style={{ animationDelay: "0.5s", animationDuration: "3.5s" }}></div>
       </div>
-
     </div>
   );
 }

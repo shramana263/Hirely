@@ -5,7 +5,7 @@ import axiosClient from "@/library/axiosClient";
 
 import { AxiosError } from "axios";
 import { Eye, EyeOff, Mail, Lock, User, Briefcase, UserPlus, ArrowRight, ChevronDown } from "lucide-react";
-
+import {  toast } from "sonner";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -32,14 +32,15 @@ export default function RegisterPage() {
   const handleRegister = async () => {
     if (!formData.name || !formData.email || !formData.password) {
       setError("All fields are required.");
+      toast("All fields are required.");
       return;
     }
 
     setLoading(true);
     try {
       await axiosClient.post("/auth/register", formData);
-
-      
+        toast.success("Registration successful! Please login.");
+      // Redirect based on role
       if (formData.role === "jobprovider") router.push("/login");
       else if (formData.role === "admin") router.push("/login");
       else if (formData.role === "jobseeker") router.push("/login");
@@ -51,6 +52,7 @@ export default function RegisterPage() {
         setError(axiosError.response.data?.message || "Login failed");
       } else {
         setError("Login failed");
+         toast.error("Login failed");
       }
     } finally {
       setLoading(false);
@@ -66,7 +68,7 @@ export default function RegisterPage() {
     }
   };
 
-  const getRoleLabel = (role:String) => {
+  const getRoleLabel = (role:string) => {
     switch (role) {
       case "jobseeker": return "Job Seeker";
       case "admin": return "Administrator";

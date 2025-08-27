@@ -1,6 +1,6 @@
 "use client"
 
-import {  Float} from "@react-three/drei"
+// import {  Float} from "@react-three/drei"
 import { easeOut } from "framer-motion"
 
 import { motion } from "framer-motion"
