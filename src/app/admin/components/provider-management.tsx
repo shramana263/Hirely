@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { DataTable } from "./data-table"
 import { Button } from "@/components/ui/button"
@@ -13,63 +13,18 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 export interface Provider {
   id: string
   name: string
-  company: string
   email: string
-  status: "approved" | "pending" | "rejected"
+  contact_no: string
+  status: "pending" | "approved" | "rejected"
+  industry: string
   joinDate: string
   jobPostings: number
 }
 
-const dummyProviders: Provider[] = [
-  {
-    id: "1",
-    name: "Alice Johnson",
-    company: "TechCorp Inc.",
-    email: "alice@techcorp.com",
-    status: "approved",
-    joinDate: "2024-01-10",
-    jobPostings: 5,
-  },
-  {
-    id: "2",
-    name: "Bob Smith",
-    company: "StartupXYZ",
-    email: "bob@startupxyz.com",
-    status: "pending",
-    joinDate: "2024-01-18",
-    jobPostings: 0,
-  },
-  {
-    id: "3",
-    name: "Carol Davis",
-    company: "MegaCorp Ltd.",
-    email: "carol@megacorp.com",
-    status: "approved",
-    joinDate: "2024-01-05",
-    jobPostings: 12,
-  },
-  {
-    id: "4",
-    name: "David Wilson",
-    company: "InnovateLab",
-    email: "david@innovatelab.com",
-    status: "rejected",
-    joinDate: "2024-01-15",
-    jobPostings: 0,
-  },
-  {
-    id: "5",
-    name: "Eva Brown",
-    company: "FutureTech",
-    email: "eva@futuretech.com",
-    status: "pending",
-    joinDate: "2024-01-20",
-    jobPostings: 0,
-  },
-]
+
 
 export function ProviderManagement() {
-  const [providers, setProviders] = useState<Provider[]>(dummyProviders)
+  const [providers, setProviders] = useState<Provider[]>([])
   const [confirmationModal, setConfirmationModal] = useState<{
     open: boolean
     title: string
@@ -81,6 +36,27 @@ export function ProviderManagement() {
     description: "",
     onConfirm: () => {},
   })
+
+
+    useEffect(() => {
+      async function fetchUsers() {
+        const accessToken = sessionStorage.getItem("accessToken");
+        const res = await fetch("http://localhost:6008/api/admin/providers", {
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+        const data = await res.json()
+        if (data.success) {
+          console.log(data.data);
+          
+          setProviders(data.data)
+        }
+      }
+      fetchUsers()
+    }, [])
 
   const handleProviderAction = (providerId: string, action: "approve" | "reject") => {
     setProviders(
@@ -102,7 +78,7 @@ export function ProviderManagement() {
   const handleApprove = (provider: Provider) => {
     showConfirmation(
       "Approve Provider",
-      `Are you sure you want to approve ${provider.name} from ${provider.company}?`,
+      `Are you sure you want to approve ${provider.name} from ${provider.name}?`,
       () => handleProviderAction(provider.id, "approve"),
     )
   }
@@ -110,7 +86,7 @@ export function ProviderManagement() {
   const handleReject = (provider: Provider) => {
     showConfirmation(
       "Reject Provider",
-      `Are you sure you want to reject ${provider.name} from ${provider.company}?`,
+      `Are you sure you want to reject ${provider.name} from ${provider.name}?`,
       () => handleProviderAction(provider.id, "reject"),
     )
   }
@@ -130,14 +106,27 @@ export function ProviderManagement() {
       ),
     },
     {
-      accessorKey: "company",
+      accessorKey: "email",
       header: ({ column }) => (
         <Button
            
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="text-primary-foreground hover:text-primary-foreground hover:bg-primary/80"
         >
-          Company
+          Email
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+    },
+    {
+      accessorKey: "contact_no",
+      header: ({ column }) => (
+        <Button
+           
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="text-primary-foreground hover:text-primary-foreground hover:bg-primary/80"
+        >
+          Contact
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
