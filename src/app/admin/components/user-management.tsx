@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { UserModal } from "./user-modal"
 import { MoreHorizontal, ArrowUpDown, Eye, Edit, Ban, CheckCircle } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import axiosClient from "@/library/axiosClient"
 
 
 export interface User {
@@ -24,26 +25,19 @@ export interface User {
 
 export function UserManagement() {
   const [users, setUsers] = useState<User[]>([])
-    const [selectedUser, setSelectedUser] = useState<User | null>(null)
+  const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
   const [modalMode, setModalMode] = useState<"view" | "edit">("view")
 
-  
   useEffect(() => {
     async function fetchUsers() {
-      const accessToken = sessionStorage.getItem("accessToken");
-      const res = await fetch("http://localhost:6008/api/admin/allusers", {
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    )
-      const data = await res.json()
-      if (data.success) {
-        console.log(data.data);
-        
-        setUsers(data.data)
+      try {
+        const res = await axiosClient.get("/admin/allusers")
+        if (res.data.success) {
+          setUsers(res.data.data)
+        }
+      } catch (error) {
+        console.error("Failed to fetch users:", error)
       }
     }
     fetchUsers()

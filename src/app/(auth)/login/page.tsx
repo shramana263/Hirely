@@ -31,7 +31,7 @@ export default function LoginPage() {
       });
 
       if (userRole === "jobseeker") router.push("/jobprovider");
-      else if (userRole === "admin") router.push("/jobprovider");
+      else if (userRole === "admin") router.push("/admin");
       else if (userRole === "jobprovider") router.push("/jobprovider");
     } catch (err: unknown) {
       const axiosError = err as AxiosError<{ message?: string }>;

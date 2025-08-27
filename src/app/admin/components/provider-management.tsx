@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ConfirmationModal } from "./confirmation-modal"
 import { MoreHorizontal, ArrowUpDown, Eye, CheckCircle, X, Building } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import axiosClient from "@/library/axiosClient"
 
 export interface Provider {
   id: string
@@ -37,26 +38,19 @@ export function ProviderManagement() {
     onConfirm: () => {},
   })
 
-
-    useEffect(() => {
-      async function fetchUsers() {
-        const accessToken = sessionStorage.getItem("accessToken");
-        const res = await fetch("http://localhost:6008/api/admin/providers", {
-          credentials: "include",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+  useEffect(() => {
+    async function fetchProviders() {
+      try {
+        const res = await axiosClient.get("/admin/providers")
+        if (res.data.success) {
+          setProviders(res.data.data)
         }
-      )
-        const data = await res.json()
-        if (data.success) {
-          console.log(data.data);
-          
-          setProviders(data.data)
-        }
+      } catch (error) {
+        console.error("Failed to fetch providers:", error)
       }
-      fetchUsers()
-    }, [])
+    }
+    fetchProviders()
+  }, [])
 
   const handleProviderAction = (providerId: string, action: "approve" | "reject") => {
     setProviders(

@@ -66,7 +66,7 @@ export function SkillProvider() {
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
   const [modalMode, setModalMode] = useState<"add" | "edit">("add")
-  const [categoryFilter, setCategoryFilter] = useState<string>("all") // Updated default value
+  const [categoryFilter, setCategoryFilter] = useState<string>("all")
   const [tagFilter, setTagFilter] = useState<string>("")
 
   const filteredSkills = skills.filter((skill) => {
