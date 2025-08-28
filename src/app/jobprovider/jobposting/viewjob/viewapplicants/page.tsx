@@ -145,7 +145,7 @@ export default function ApplicantsPage() {
             Applicants List
           </h1>
           <Button
-            onClick={() => router.push(`/jobprovider/jobposting/viewjob`)}
+            onClick={() => router.push(`/jobprovider/jobposting`)}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 sm:px-5 sm:py-2 rounded-lg"
           >
             Back

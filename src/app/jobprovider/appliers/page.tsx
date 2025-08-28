@@ -1,4 +1,5 @@
 "use client";
+
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
@@ -11,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-// Applicants data
+// ✅ Applicants sample data
 const applicants = [
   {
     id: 1,
@@ -117,6 +118,7 @@ const applicants = [
   },
 ];
 
+
 const columns: ColumnDef<typeof applicants[0]>[] = [
   {
     accessorKey: "first_name",
@@ -177,12 +179,28 @@ const columns: ColumnDef<typeof applicants[0]>[] = [
   },
 ];
 
+
 export default function ApplicantsPage() {
   const router = useRouter();
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-12">
       <div className="max-w-7xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 sm:p-8 border border-gray-200 dark:border-gray-700">
+
+        <nav className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+          <ol className="flex items-center space-x-2">
+            <li>
+              <a href="/jobprovider" className="hover:underline">
+                jobprovider
+              </a>
+            </li>
+            <li>/</li>
+            <li className="text-gray-800 dark:text-gray-200 font-medium">
+              appliers
+            </li>
+          </ol>
+        </nav>
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
           <h1 className="text-2xl sm:text-3xl text-gray-800 dark:text-white font-extrabold">
@@ -196,11 +214,12 @@ export default function ApplicantsPage() {
           </Button>
         </div>
 
+   
         <DataTable
           columns={columns}
           data={applicants}
           searchKey="first_name"
-          pageSize={4} 
+          pageSize={4}
         />
       </div>
     </div>

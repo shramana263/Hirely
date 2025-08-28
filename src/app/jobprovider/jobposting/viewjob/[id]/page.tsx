@@ -38,6 +38,31 @@ export default function ViewJobPage() {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-10 px-4">
       <div className="max-w-4xl mx-auto space-y-6">
+
+        <nav className="text-sm mb-6 text-gray-600 dark:text-gray-300">
+          <ol className="flex items-center space-x-2">
+            <li>
+              <button
+                onClick={() => router.push("/jobprovider")}
+                className="hover:underline  text-gray-500 dark:text-gray-500"
+              >
+                Jobprovider
+              </button>
+            </li>
+            <li>/</li>
+            <li>
+              <button
+                onClick={() => router.push("/jobprovider/jobposting")}
+                className="hover:underline  text-gray-500 dark:text-gray-500"
+              >
+                Job Posting
+              </button>
+            </li>
+            <li>/</li>
+            <li className="text-gray-800 dark:text-gray-200">View Job</li>
+          </ol>
+        </nav>
+
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-6 border border-gray-200 dark:border-gray-700">
           <h1 className="text-2xl sm:text-3xl text-gray-800 dark:text-white">
             {job.name}
@@ -84,17 +109,20 @@ export default function ViewJobPage() {
             {job.requirement}
           </div>
         </div>
-         <div className="flex flex-1 gap-170 justify-center">
+
+        <div className="flex flex-1 gap-6 justify-start">
           <Button
-            onClick={() => router.push(`/jobprovider/jobposting/viewjob/viewapplicants`)}
-            className="bg-blue-600 hover:bg-blue-700 text-white flex justify-start"
+            onClick={() =>
+              router.push(`/jobprovider/jobposting/viewjob/viewapplicants`)
+            }
+            className="bg-blue-600 hover:bg-blue-700 text-white"
           >
-            view applicants
+            View Applicants
           </Button>
-      
+
           <Button
             onClick={() => router.back()}
-            className="bg-blue-600 hover:bg-blue-700 text-white flex justify-end"
+            className="bg-blue-600 hover:bg-blue-700 text-white"
           >
             Back
           </Button>
