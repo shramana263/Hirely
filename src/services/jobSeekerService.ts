@@ -107,33 +107,60 @@ class JobSeekerService {
 
   async updateProfile(profileData: UpdateProfileData, imageFile?: File): Promise<{ success: boolean; data: JobSeekerProfile; message?: string }> {
     try {
-      console.log("Updating jobseeker profile...", profileData);
+      console.log("=== FRONTEND UPDATE PROFILE ===");
+      console.log("Profile data:", profileData);
+      console.log("Image file provided:", !!imageFile);
+      if (imageFile) {
+        console.log("Image file details:", {
+          name: imageFile.name,
+          size: imageFile.size,
+          type: imageFile.type
+        });
+      }
       
       const formData = new FormData();
       
-      // Append all profile data
+      // Append all profile data (only non-empty values)
       Object.entries(profileData).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
+        if (value !== undefined && value !== null && value !== '') {
           formData.append(key, value.toString());
+          console.log(`✓ Added to FormData: ${key} = ${value}`);
+        } else {
+          console.log(`✗ Skipped empty value: ${key} = ${value}`);
         }
       });
       
       // Append image file if provided
       if (imageFile) {
         formData.append("image", imageFile);
+        console.log("✓ Added image file to FormData:", imageFile.name);
       }
       
-      const response = await axiosClient.put("/jobseekers/me", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      console.log("Making PUT request to /jobseekers/me...");
       
-      console.log("Update profile API response:", response);
+      // Let axios set the Content-Type automatically for multipart/form-data
+      const response = await axiosClient.put("/jobseekers/me", formData);
+      
+      console.log("✅ Update profile API response:", response);
+      console.log("Response data:", response.data);
+      
+      if (!response.data) {
+        throw new Error("Empty response from server");
+      }
       
       return response.data;
     } catch (error: any) {
-      console.error("Failed to update profile:", error);
+      console.error("❌ Failed to update profile:", error);
+      
+      if (error.response) {
+        console.error("Error response status:", error.response.status);
+        console.error("Error response data:", error.response.data);
+        console.error("Error response headers:", error.response.headers);
+      } else if (error.request) {
+        console.error("No response received:", error.request);
+      } else {
+        console.error("Request setup error:", error.message);
+      }
       
       if (error.response?.status === 401) {
         throw new Error("Authentication failed. Please log in again.");
@@ -143,7 +170,16 @@ class JobSeekerService {
         throw new Error(error.response?.data?.message || "Invalid profile data.");
       }
       
-      throw new Error(error.response?.data?.message || "Failed to update profile");
+      if (error.response?.status === 413) {
+        throw new Error("File too large. Please choose a smaller image.");
+      }
+      
+      // Handle case where response is empty or malformed
+      if (!error.response) {
+        throw new Error("No response from server. Please check if the backend is running.");
+      }
+      
+      throw new Error(error.response?.data?.message || error.message || "Failed to update profile");
     }
   }
 

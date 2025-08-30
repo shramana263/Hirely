@@ -25,10 +25,10 @@ export default function LoginPage() {
       const token = response.data.accessToken;
 
       sessionStorage.setItem("accessToken", token);
-      // sessionStorage.setItem("userRole", userRole);
-      // sessionStorage.setItem("userName", response.data.user.name || "User");
+      sessionStorage.setItem("userRole", userRole);
+      sessionStorage.setItem("userName", response.data.user.name || "User");
 
-      // console.log("Login successful:", { userRole, token: token.substring(0, 20) + "..." });
+      console.log("Login successful:", { userRole, token: token.substring(0, 20) + "..." });
 
       toast.success(`Welcome back, ${response.data.user.name || "User"}!`, {
         description: "Login Successful 🎉",

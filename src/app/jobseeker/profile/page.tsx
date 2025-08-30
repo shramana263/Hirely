@@ -60,15 +60,48 @@ export default function JobSeekerProfilePage() {
 
   // Check authentication
   useEffect(() => {
-    const token = sessionStorage.getItem("accessToken");
-    const userRole = sessionStorage.getItem("userRole");
+    const checkAuth = () => {
+      try {
+        // Add a small delay to ensure sessionStorage is available
+        const token = sessionStorage.getItem("accessToken");
+        const userRole = sessionStorage.getItem("userRole");
+        const userName = sessionStorage.getItem("userName");
+        
+        console.log("Profile page auth check:");
+        console.log("- Token exists:", !!token);
+        console.log("- Token preview:", token ? token.substring(0, 20) + "..." : "None");
+        console.log("- User role:", userRole);
+        console.log("- User name:", userName);
+        
+        if (!token) {
+          console.log("❌ No token found, redirecting to login");
+          router.push("/login");
+          return false;
+        }
+        
+        if (userRole !== "jobseeker") {
+          console.log(`❌ Invalid user role '${userRole}', expected 'jobseeker', redirecting to login`);
+          router.push("/login");
+          return false;
+        }
+        
+        console.log("✅ Authentication successful");
+        return true;
+      } catch (error) {
+        console.error("❌ Error during auth check:", error);
+        router.push("/login");
+        return false;
+      }
+    };
     
-    if (!token || userRole !== "jobseeker") {
-      router.push("/login");
-      return;
-    }
+    // Use setTimeout to ensure the component is fully mounted
+    const timeoutId = setTimeout(() => {
+      if (checkAuth()) {
+        fetchProfile();
+      }
+    }, 50);
     
-    fetchProfile();
+    return () => clearTimeout(timeoutId);
   }, [router]);
 
   const fetchProfile = async () => {
@@ -212,13 +245,13 @@ export default function JobSeekerProfilePage() {
   const isProfileComplete = profile ? jobSeekerService.isProfileComplete(profile) : false;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-800">
       <JobSeekerNavbar userName={profile?.name} userImage={imagePreview || undefined} />
       
       <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Profile</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-gray-50">Profile</h1>
+          <p className="mt-2 text-gray-300">
             Complete your profile to start applying for jobs and generate your resume.
           </p>
         </div>
@@ -276,7 +309,7 @@ export default function JobSeekerProfilePage() {
                     {profile?.name ? getInitials(profile.name) : "U"}
                   </AvatarFallback>
                 </Avatar>
-                <div>
+                <div className="flex flex-col gap-1">
                   <Label htmlFor="image-upload" className="cursor-pointer">
                     <Button type="button" variant="outline" size="sm" asChild>
                       <span>
@@ -298,7 +331,7 @@ export default function JobSeekerProfilePage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Email - Non-editable */}
-                <div>
+                <div className="flex flex-col gap-1">
                   <Label htmlFor="email" className="flex items-center space-x-2">
                     <Mail className="h-4 w-4" />
                     <span>Email</span>
@@ -308,25 +341,25 @@ export default function JobSeekerProfilePage() {
                     type="email"
                     value={profile?.email || ""}
                     disabled
-                    className="bg-gray-100"
+                    // className="bg-gray-100"
                   />
                   <p className="text-xs text-gray-500 mt-1">Email cannot be changed</p>
                 </div>
 
                 {/* Full Name - Non-editable */}
-                <div>
+                <div className="flex flex-col gap-1">
                   <Label htmlFor="name">Full Name</Label>
                   <Input
                     id="name"
                     value={profile?.name || ""}
                     disabled
-                    className="bg-gray-100"
+                    // className="bg-gray-100"
                   />
                   <p className="text-xs text-gray-500 mt-1">Name from signup cannot be changed</p>
                 </div>
 
                 {/* Contact Number */}
-                <div>
+                <div className="flex flex-col gap-1">
                   <Label htmlFor="contact_no" className="flex items-center space-x-2">
                     <Phone className="h-4 w-4" />
                     <span>Contact Number *</span>
@@ -342,7 +375,7 @@ export default function JobSeekerProfilePage() {
                 </div>
 
                 {/* Date of Birth */}
-                <div>
+                <div className="flex flex-col gap-1">
                   <Label htmlFor="dob" className="flex items-center space-x-2">
                     <Calendar className="h-4 w-4" />
                     <span>Date of Birth</span>
@@ -359,7 +392,7 @@ export default function JobSeekerProfilePage() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* First Name */}
-                <div>
+                <div className="flex flex-col gap-1">
                   <Label htmlFor="first_name">First Name *</Label>
                   <Input
                     id="first_name"
@@ -372,7 +405,7 @@ export default function JobSeekerProfilePage() {
                 </div>
 
                 {/* Middle Name */}
-                <div>
+                <div className="flex flex-col gap-1">
                   <Label htmlFor="middle_name">Middle Name</Label>
                   <Input
                     id="middle_name"
@@ -384,7 +417,7 @@ export default function JobSeekerProfilePage() {
                 </div>
 
                 {/* Last Name */}
-                <div>
+                <div className="flex flex-col gap-1">
                   <Label htmlFor="last_name">Last Name *</Label>
                   <Input
                     id="last_name"
@@ -399,7 +432,7 @@ export default function JobSeekerProfilePage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Address */}
-                <div>
+                <div className="flex flex-col gap-1">
                   <Label htmlFor="address" className="flex items-center space-x-2">
                     <MapPin className="h-4 w-4" />
                     <span>Address *</span>
@@ -415,7 +448,7 @@ export default function JobSeekerProfilePage() {
                 </div>
 
                 {/* Country */}
-                <div>
+                <div className="flex flex-col gap-1">
                   <Label htmlFor="country" className="flex items-center space-x-2">
                     <Globe className="h-4 w-4" />
                     <span>Country</span>
@@ -443,7 +476,7 @@ export default function JobSeekerProfilePage() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Skills */}
-                <div>
+                <div className="flex flex-col gap-1">
                   <Label htmlFor="skills">Skills *</Label>
                   <Input
                     id="skills"
@@ -456,7 +489,7 @@ export default function JobSeekerProfilePage() {
                 </div>
 
                 {/* Experience Years */}
-                <div>
+                <div className="flex flex-col gap-1">
                   <Label htmlFor="experience_year">Years of Experience *</Label>
                   <Input
                     id="experience_year"
@@ -469,7 +502,7 @@ export default function JobSeekerProfilePage() {
                 </div>
 
                 {/* Availability */}
-                <div>
+                <div className="flex flex-col gap-1">
                   <Label htmlFor="availability">Availability</Label>
                   <Input
                     id="availability"
@@ -481,7 +514,7 @@ export default function JobSeekerProfilePage() {
                 </div>
 
                 {/* Additional Link */}
-                <div>
+                <div className="flex flex-col gap-1">
                   <Label htmlFor="additional_link" className="flex items-center space-x-2">
                     <LinkIcon className="h-4 w-4" />
                     <span>Portfolio/LinkedIn</span>
@@ -507,7 +540,7 @@ export default function JobSeekerProfilePage() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Secondary Education */}
-                <div>
+                <div className="flex flex-col gap-1">
                   <Label htmlFor="secondary_experience">Secondary Education</Label>
                   <Input
                     id="secondary_experience"
@@ -519,7 +552,7 @@ export default function JobSeekerProfilePage() {
                 </div>
 
                 {/* Higher Secondary */}
-                <div>
+                <div className="flex flex-col gap-1">
                   <Label htmlFor="highersecondary_experience">Higher Secondary</Label>
                   <Input
                     id="highersecondary_experience"
@@ -531,7 +564,7 @@ export default function JobSeekerProfilePage() {
                 </div>
 
                 {/* CGPA/Percentage */}
-                <div>
+                <div className="flex flex-col gap-1">
                   <Label htmlFor="cgpa">CGPA/Percentage</Label>
                   <Input
                     id="cgpa"
@@ -556,7 +589,7 @@ export default function JobSeekerProfilePage() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Resume Path */}
-                <div>
+                <div className="flex flex-col gap-1">
                   <Label htmlFor="resume_path">Resume File Path</Label>
                   <Input
                     id="resume_path"
@@ -568,7 +601,7 @@ export default function JobSeekerProfilePage() {
                 </div>
 
                 {/* Resume Link */}
-                <div>
+                <div className="flex flex-col gap-1">
                   <Label htmlFor="resume_link">Resume Link</Label>
                   <Input
                     id="resume_link"
