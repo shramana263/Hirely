@@ -87,6 +87,7 @@ export function SkillModal({ skill, mode, open, onOpenChange, onSave, categories
           <DialogTitle>{mode === "add" ? "Add New Skill" : "Edit Skill"}</DialogTitle>
           <DialogDescription>
             {mode === "add" ? "Add a new skill to the database." : "Make changes to the skill information."}
+            toast.success(Skill saved successfully!)
           </DialogDescription>
         </DialogHeader>
 

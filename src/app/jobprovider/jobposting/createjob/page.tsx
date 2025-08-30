@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axiosClient from "@/library/axiosClient";
-import {  toast } from "sonner";
+import { toast } from "sonner";
 
 export default function CreateJobForm() {
   const router = useRouter();
@@ -18,8 +18,7 @@ export default function CreateJobForm() {
     max_salary: "",
   });
 
-  // const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState("");
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -40,7 +39,7 @@ export default function CreateJobForm() {
       toast.success("Job created successfully!");
       console.log(response.data);
       router.push("/jobprovider/jobposting");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (error.response) {
         toast.error(error.response.data.message || "Failed to create job");
@@ -49,12 +48,6 @@ export default function CreateJobForm() {
       }
     }
   };
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [inputForm, setInputForm] = useState({
-    min_salary: "",
-    max_salary: "",
-  });
-  const [error, setError] = useState("");
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -62,7 +55,6 @@ export default function CreateJobForm() {
     setForm((prev) => {
       const updatedForm = { ...prev, [name]: value };
 
-      // Validation check
       if (
         updatedForm.min_salary &&
         updatedForm.max_salary &&
@@ -83,11 +75,37 @@ export default function CreateJobForm() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6 sm:p-10 text-gray-900 dark:text-gray-100">
       <div className="max-w-3xl mx-auto w-full">
+      
+        <nav className="text-sm mb-6 text-gray-600 dark:text-gray-300">
+          <ol className="flex items-center space-x-2">
+            <li>
+              <a
+                onClick={() => router.push("/jobprovider")}
+                className="hover:underline  text-gray-500 dark:text-gray-500"
+              >
+                Jobprovider
+              </a>
+            </li>
+            <li>/</li>
+            <li>
+              <button
+                onClick={() => router.push("/jobprovider/jobposting")}
+                className="hover:underline text-gray-500 dark:text-gray-500"
+              >
+                Job Posting
+              </button>
+            </li>
+            <li>/</li>
+            <li className="text-gray-800 dark:text-gray-200">Post Job</li>
+          </ol>
+        </nav>
+
         <h1 className="text-2xl sm:text-3xl font-bold text-blue-700 dark:text-blue-400 mb-8">
           Create New Job
         </h1>
+
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Job Title */}
+    
           <div>
             <label htmlFor="name" className="block text-sm font-medium mb-1">
               Job Title
@@ -103,11 +121,9 @@ export default function CreateJobForm() {
             />
           </div>
 
+          {/* Job Type */}
           <div>
-            <label
-              htmlFor="job_type"
-              className="block text-sm font-medium mb-1"
-            >
+            <label htmlFor="job_type" className="block text-sm font-medium mb-1">
               Job Type
             </label>
             <input
@@ -122,6 +138,7 @@ export default function CreateJobForm() {
             />
           </div>
 
+          {/* Address */}
           <div>
             <label htmlFor="address" className="block text-sm font-medium mb-1">
               Address
@@ -137,6 +154,7 @@ export default function CreateJobForm() {
             />
           </div>
 
+          {/* Min Salary */}
           <div>
             <label
               htmlFor="min_salary"
@@ -156,6 +174,7 @@ export default function CreateJobForm() {
             />
           </div>
 
+          {/* Max Salary */}
           <div>
             <label
               htmlFor="max_salary"
@@ -176,6 +195,7 @@ export default function CreateJobForm() {
             {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
           </div>
 
+          {/* Description */}
           <div>
             <label
               htmlFor="description"
@@ -194,6 +214,7 @@ export default function CreateJobForm() {
             />
           </div>
 
+          {/* Requirements */}
           <div>
             <label
               htmlFor="requirement"
@@ -212,6 +233,7 @@ export default function CreateJobForm() {
             />
           </div>
 
+          {/* Buttons */}
           <div className="pt-4 flex justify-between ">
             <button
               type="submit"

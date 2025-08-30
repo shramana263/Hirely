@@ -1,7 +1,7 @@
 
 "use client";
 
-import { Menu } from "lucide-react"; // Hamburger icon
+import { Menu } from "lucide-react";
 import ThemeToggle from "../components/ThemeToggle/page";
 
 interface NavbarProps {
@@ -13,11 +13,11 @@ export default function Navbar({ onToggleSidebar }: NavbarProps) {
     <nav
       className="
         fixed top-0 left-0 right-0 z-50 
-        bg-white/30 dark:bg-gray-900/30 backdrop-blur-md 
-        border-b border-gray-300/40 dark:border-gray-700/40 
+         dark:bg-gray-900/30 backdrop-blur-md 
+         dark:border-gray-700/40 
         p-3  shadow-sm
         md:left-64 md:right-0 md:px-6
-        flex items-center justify-between
+        flex items-center justify-between bg-card border-b border-border px-6 py-4
       "
     >
       {/* Hamburger button - visible only on mobile */}
@@ -29,9 +29,7 @@ export default function Navbar({ onToggleSidebar }: NavbarProps) {
         <Menu size={24} />
       </button>
 
-      {/* Spacer to keep theme toggle on right */}
       <div className="flex-1"></div>
-
       <ThemeToggle />
     </nav>
   );
