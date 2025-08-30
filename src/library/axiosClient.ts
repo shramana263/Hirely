@@ -2,11 +2,13 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: "https://jobsite-api.wishalpha.com/api/",
+  baseURL: process.env.NODE_ENV === 'development' 
+    ? "http://localhost:6008/api/" 
+    : "https://jobsite-api.wishalpha.com/api/",
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials:true
+  withCredentials: true
 });
 
 
@@ -27,19 +29,35 @@ axiosClient.interceptors.request.use((config) => {
 
 axiosClient.interceptors.response.use(
   (response) => {
+    console.log("Axios response successful:", {
+      status: response.status,
+      statusText: response.statusText,
+      data: response.data,
+      url: response.config?.url
+    });
     return response;
   },
   (error) => {
     try {
-      const { response, config } = error;
+      const { response, config, request } = error;
+      
       console.error("Axios response error:", {
         status: response?.status,
         statusText: response?.statusText,
         data: response?.data,
         url: config?.url,
         method: config?.method,
-        baseURL: config?.baseURL
+        baseURL: config?.baseURL,
+        fullUrl: config?.baseURL + config?.url,
+        hasResponse: !!response,
+        hasRequest: !!request,
+        errorMessage: error.message
       });
+      
+      // Check if the request was made but no response was received
+      if (request && !response) {
+        console.error("No response received from server. Check if backend is running on the correct port.");
+      }
       
       if (response?.status === 401) {
         console.log("401 error - removing token");

@@ -7,7 +7,8 @@ import {
   Bookmark,
   ExternalLink,
   Users,
-  Briefcase
+  Briefcase,
+  AlertCircle
 } from "lucide-react";
 import { Job } from "@/services/jobService";
 
@@ -17,6 +18,7 @@ interface JobCardProps {
   onToggleSave: (jobId: string) => void;
   onApply?: (jobId: string) => void;
   onViewDetails?: (jobId: string) => void;
+  isProfileComplete?: boolean;
 }
 
 export default function JobCard({ 
@@ -24,7 +26,8 @@ export default function JobCard({
   isSaved, 
   onToggleSave, 
   onApply, 
-  onViewDetails 
+  onViewDetails,
+  isProfileComplete = false 
 }: JobCardProps) {
   const formatSalary = (min: number, max: number) => {
     const formatNumber = (num: number) => {
@@ -152,11 +155,24 @@ export default function JobCard({
         {/* Action Buttons */}
         <div className="flex items-center gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
           <button 
-            onClick={() => onApply?.(job._id)}
-            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 text-sm"
+            onClick={() => {
+              if (!isProfileComplete) {
+                alert("Please complete your profile before applying for jobs. Go to Profile to complete your details.");
+                return;
+              }
+              onApply?.(job._id);
+            }}
+            disabled={!isProfileComplete}
+            className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 text-sm ${
+              isProfileComplete 
+                ? "bg-blue-600 hover:bg-blue-700 text-white" 
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
+            title={!isProfileComplete ? "Complete your profile to apply for jobs" : "Apply for this job"}
           >
+            {!isProfileComplete && <AlertCircle size={16} />}
             <Users size={16} />
-            Easy Apply
+            {isProfileComplete ? "Easy Apply" : "Complete Profile to Apply"}
           </button>
           <button 
             onClick={() => onViewDetails?.(job._id)}

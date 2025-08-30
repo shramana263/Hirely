@@ -8,6 +8,8 @@ import {
 } from "lucide-react";
 import jobService, { Job } from "@/services/jobService";
 import JobCard from "@/components/JobCard";
+import JobSeekerNavbar from "@/components/JobSeekerNavbar";
+import jobSeekerService from "@/services/jobSeekerService";
 
 // Utility function to check authentication
 const checkAuthentication = () => {
@@ -28,12 +30,38 @@ export default function JobSeekerPage() {
     isAuthenticated: false,
     token: null
   });
+  const [isProfileComplete, setIsProfileComplete] = useState(false);
 
   // Update auth info whenever component mounts or updates
   useEffect(() => {
     const { isAuthenticated, token } = checkAuthentication();
     setAuthInfo({ isAuthenticated, token });
+    
+    // Check profile completion if authenticated
+    if (isAuthenticated && token) {
+      checkProfileCompletion();
+    }
   }, []);
+
+  const checkProfileCompletion = async () => {
+    try {
+      const response = await jobSeekerService.getProfile();
+      if (response.success) {
+        const complete = jobSeekerService.isProfileComplete(response.data);
+        setIsProfileComplete(complete);
+      }
+    } catch (error) {
+      console.error("Failed to check profile completion:", error);
+      // Don't set profile as complete if we can't check
+      setIsProfileComplete(false);
+      
+      // Check if it's an authentication error
+      if (error instanceof Error && error.message.includes("Authentication")) {
+        console.log("Authentication error, redirecting to login");
+        // Could redirect to login here if needed
+      }
+    }
+  };
 
   const refreshJobs = async () => {
     try {
@@ -127,10 +155,13 @@ export default function JobSeekerPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading job opportunities...</p>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <JobSeekerNavbar />
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600 dark:text-gray-400">Loading job opportunities...</p>
+          </div>
         </div>
       </div>
     );
@@ -140,8 +171,10 @@ export default function JobSeekerPage() {
     const isAuthError = error.includes("Authentication required") || error.includes("Please log in") || error.includes("Authentication failed");
     
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-center max-w-md">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <JobSeekerNavbar />
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center max-w-md">
           <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
           
           <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-4 text-sm">
@@ -183,12 +216,15 @@ export default function JobSeekerPage() {
             )}
           </div>
         </div>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <JobSeekerNavbar />
+      
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-6xl mx-auto px-6 py-4">
@@ -270,6 +306,7 @@ export default function JobSeekerPage() {
                   onToggleSave={toggleSaveJob}
                   onApply={handleApplyJob}
                   onViewDetails={handleViewJobDetails}
+                  isProfileComplete={isProfileComplete}
                 />
               ))}
 
