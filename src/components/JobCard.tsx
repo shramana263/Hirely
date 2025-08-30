@@ -19,6 +19,7 @@ interface JobCardProps {
   onApply?: (jobId: string) => void;
   onViewDetails?: (jobId: string) => void;
   isProfileComplete?: boolean;
+  isApplied?: boolean;
 }
 
 export default function JobCard({ 
@@ -27,7 +28,8 @@ export default function JobCard({
   onToggleSave, 
   onApply, 
   onViewDetails,
-  isProfileComplete = false 
+  isProfileComplete = false,
+  isApplied = false
 }: JobCardProps) {
   const formatSalary = (min: number, max: number) => {
     const formatNumber = (num: number) => {
@@ -160,19 +162,36 @@ export default function JobCard({
                 alert("Please complete your profile before applying for jobs. Go to Profile to complete your details.");
                 return;
               }
+              if (isApplied) {
+                alert("You have already applied for this job.");
+                return;
+              }
               onApply?.(job._id);
             }}
-            disabled={!isProfileComplete}
+            disabled={!isProfileComplete || isApplied}
             className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 text-sm ${
-              isProfileComplete 
-                ? "bg-blue-600 hover:bg-blue-700 text-white" 
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              !isProfileComplete
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : isApplied
+                ? "bg-green-100 text-green-700 border border-green-300 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700 text-white"
             }`}
-            title={!isProfileComplete ? "Complete your profile to apply for jobs" : "Apply for this job"}
+            title={
+              !isProfileComplete 
+                ? "Complete your profile to apply for jobs" 
+                : isApplied
+                ? "You have already applied for this job"
+                : "Apply for this job"
+            }
           >
             {!isProfileComplete && <AlertCircle size={16} />}
             <Users size={16} />
-            {isProfileComplete ? "Easy Apply" : "Complete Profile to Apply"}
+            {!isProfileComplete 
+              ? "Complete Profile to Apply" 
+              : isApplied 
+              ? "Already Applied" 
+              : "Easy Apply"
+            }
           </button>
           <button 
             onClick={() => onViewDetails?.(job._id)}

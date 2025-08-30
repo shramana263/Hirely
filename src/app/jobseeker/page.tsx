@@ -10,6 +10,8 @@ import jobService, { Job } from "@/services/jobService";
 import JobCard from "@/components/JobCard";
 import JobSeekerNavbar from "@/components/JobSeekerNavbar";
 import jobSeekerService from "@/services/jobSeekerService";
+import applicationService from "@/services/applicationService";
+import JobApplicationModal from "@/components/JobApplicationModal";
 
 // Utility function to check authentication
 const checkAuthentication = () => {
@@ -31,6 +33,9 @@ export default function JobSeekerPage() {
     token: null
   });
   const [isProfileComplete, setIsProfileComplete] = useState(false);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
+  const [appliedJobIds, setAppliedJobIds] = useState<Set<string>>(new Set());
 
   // Update auth info whenever component mounts or updates
   useEffect(() => {
@@ -40,6 +45,7 @@ export default function JobSeekerPage() {
     // Check profile completion if authenticated
     if (isAuthenticated && token) {
       checkProfileCompletion();
+      fetchAppliedJobIds(); // Also fetch applied jobs
     }
   }, []);
 
@@ -60,6 +66,17 @@ export default function JobSeekerPage() {
         console.log("Authentication error, redirecting to login");
         // Could redirect to login here if needed
       }
+    }
+  };
+
+  const fetchAppliedJobIds = async () => {
+    try {
+      const appliedIds = await applicationService.getAppliedJobIds();
+      console.log("Fetched applied job IDs:", appliedIds);
+      setAppliedJobIds(new Set(appliedIds));
+    } catch (error) {
+      console.error("Failed to fetch applied job IDs:", error);
+      // Keep existing applied jobs in state if fetch fails
     }
   };
 
@@ -121,29 +138,55 @@ export default function JobSeekerPage() {
   };
 
   const handleApplyJob = async (jobId: string) => {
-    try {
-      // Check if token exists before applying
-      const token = sessionStorage.getItem("accessToken");
-      if (!token) {
-        setError("Please log in to apply for jobs.");
-        return;
-      }
+    // Check if token exists before applying
+    const token = sessionStorage.getItem("accessToken");
+    if (!token) {
+      setError("Please log in to apply for jobs.");
+      return;
+    }
 
-      console.log("Applying for job with token:", token.substring(0, 20) + "...");
-      await jobService.applyForJob(jobId);
+    // Check if profile is complete
+    if (!isProfileComplete) {
+      setError("Please complete your profile before applying for jobs. Go to your profile page to add all required information.");
+      return;
+    }
+
+    // Check if already applied for this job
+    if (appliedJobIds.has(jobId)) {
+      alert("You have already applied for this job.");
+      return;
+    }
+
+    // Find the job and open the application modal
+    const job = jobs.find(j => j._id === jobId);
+    if (job) {
+      setSelectedJob(job);
+      setIsApplicationModalOpen(true);
+    }
+  };
+
+  const handleSubmitApplication = async (applicationData: { cover_letter?: string; resume_url?: string }) => {
+    if (!selectedJob) return;
+
+    try {
+      console.log("Submitting application for job:", selectedJob._id, "with data:", applicationData);
       
-      // Show success message or redirect
-      console.log("Applied successfully to job:", jobId);
-      // You could add a toast notification here
+      const response = await applicationService.applyForJob(selectedJob._id, applicationData);
       
+      if (response.success) {
+        // Add the job ID to applied jobs set
+        setAppliedJobIds(prev => new Set([...prev, selectedJob._id]));
+        
+        alert("Application submitted successfully! You can check your application status in the Applications section.");
+        console.log("Applied successfully to job:", selectedJob._id);
+        
+        // Close modal and reset selected job
+        setIsApplicationModalOpen(false);
+        setSelectedJob(null);
+      }
     } catch (error: any) {
       console.error("Failed to apply for job:", error);
-      
-      if (error.response?.status === 401 || error.response?.status === 403) {
-        setError("Authentication failed. Please log in again.");
-      } else {
-        setError("Failed to apply for job. Please try again.");
-      }
+      throw error; // Re-throw to be handled by the modal
     }
   };
 
@@ -307,6 +350,7 @@ export default function JobSeekerPage() {
                   onApply={handleApplyJob}
                   onViewDetails={handleViewJobDetails}
                   isProfileComplete={isProfileComplete}
+                  isApplied={appliedJobIds.has(job._id)}
                 />
               ))}
 
@@ -327,6 +371,17 @@ export default function JobSeekerPage() {
           </div>
         </div>
       </div>
+
+      {/* Job Application Modal */}
+      <JobApplicationModal
+        job={selectedJob}
+        isOpen={isApplicationModalOpen}
+        onClose={() => {
+          setIsApplicationModalOpen(false);
+          setSelectedJob(null);
+        }}
+        onSubmit={handleSubmitApplication}
+      />
     </div>
   );
 }

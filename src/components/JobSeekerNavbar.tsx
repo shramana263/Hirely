@@ -57,16 +57,16 @@ export default function JobSeekerNavbar({ userName, userImage }: JobSeekerNavbar
   };
 
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+    <nav className="bg-gray-800 shadow-sm border-b border-gray-600 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/jobseeker" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-blue-300 rounded-lg flex items-center justify-center">
                 <Briefcase className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-gray-900">Hirely</span>
+              <span className="text-xl font-bold text-gray-100">Hirely</span>
             </Link>
           </div>
 
@@ -74,19 +74,19 @@ export default function JobSeekerNavbar({ userName, userImage }: JobSeekerNavbar
           <div className="hidden md:flex items-center space-x-8">
             <Link
               href="/jobseeker"
-              className="text-gray-600 hover:text-blue-600 transition-colors"
+              className="text-gray-300 hover:text-blue-400 transition-colors"
             >
               Find Jobs
             </Link>
             <Link
               href="/jobseeker/saved"
-              className="text-gray-600 hover:text-blue-600 transition-colors"
+              className="text-gray-300 hover:text-blue-400 transition-colors"
             >
               Saved Jobs
             </Link>
             <Link
               href="/jobseeker/applications"
-              className="text-gray-600 hover:text-blue-600 transition-colors"
+              className="text-gray-300 hover:text-blue-400 transition-colors"
             >
               Applications
             </Link>
