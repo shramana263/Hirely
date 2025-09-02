@@ -2,11 +2,15 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: "http://localhost:6008/api/",
+
+  baseURL: process.env.NODE_ENV === 'development' 
+    ? "http://localhost:6008/api/" 
+    : "https://jobsite-api.wishalpha.com/api/",
+
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials:true
+  withCredentials: true
 });
 
 
@@ -14,25 +18,59 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.request.use((config) => {
   const token = sessionStorage.getItem("accessToken");
-  config.headers.Authorization = `Bearer ${token}`;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+    console.log("Request with token:", token.substring(0, 20) + "...");
+    // console.log("Request URL:", config.baseURL + config.url);
+    console.log("Request method:", config.method);
+  } else {
+    console.log("No token found in session storage");
+  }
   return config;
 });
 
 axiosClient.interceptors.response.use(
   (response) => {
+    console.log("Axios response successful:", {
+      status: response.status,
+      statusText: response.statusText,
+      data: response.data,
+      url: response.config?.url
+    });
     return response;
   },
   (error) => {
     try {
-      const { response } = error;
-      if (response.status == 401) {
+      const { response, config, request } = error;
+      
+      console.error("Axios response error:", {
+        status: response?.status,
+        statusText: response?.statusText,
+        data: response?.data,
+        url: config?.url,
+        method: config?.method,
+        baseURL: config?.baseURL,
+        fullUrl: config?.baseURL + config?.url,
+        hasResponse: !!response,
+        hasRequest: !!request,
+        errorMessage: error.message
+      });
+      
+      // Check if the request was made but no response was received
+      if (request && !response) {
+        console.error("No response received from server. Check if backend is running on the correct port.");
+      }
+      
+      if (response?.status === 401) {
+        console.log("401 error - removing token");
         sessionStorage.removeItem("accessToken");
+        sessionStorage.removeItem("userRole");
+        sessionStorage.removeItem("userName");
+      } else if (response?.status === 403) {
+        console.log("403 error - forbidden access");
       }
     } catch (e) {
-      console.log(e);
-      // console.error("Axios error:", e.message);
-      // console.error("Axios config:", e.config);
-      // console.error("Axios request:", e.request);
+      console.log("Error in interceptor:", e);
     }
     throw error;
   }
