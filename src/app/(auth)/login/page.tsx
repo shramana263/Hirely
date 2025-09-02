@@ -35,6 +35,7 @@ export default function LoginPage() {
       });
 
       if (userRole === "jobseeker") router.push("/jobseeker");
+
       else if (userRole === "admin") router.push("/admin");
       else if (userRole === "jobprovider") router.push("/jobprovider");
     } catch (err: unknown) {

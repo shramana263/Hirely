@@ -15,7 +15,8 @@ export function Sidebar({ activeSection, setActiveSection, collapsed, setCollaps
   const menuItems = [
     { id: "users", label: "User Management", icon: Users },
     { id: "providers", label: "Provider Management", icon: Building2 },
-    { id: "skills", label: "Skill Provider", icon: Tags },
+
+    { id: "jobs", label: "Job Management", icon: Building2 },
   ]
 
   return (

@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -14,8 +13,6 @@ import {
   Cell,
 } from "recharts";
 // import ThemeToggle from "./components/ThemeToggle/page";
-
-
 
 const data = [
   { month: "Jan", Applications: 30, Shortlisted: 10, Rejected: 5 },
@@ -43,7 +40,21 @@ const pieColors = ["#4f46e5", "#10b981", "#ef4444"];
 export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6 transition-colors duration-300">
-   
+  
+      <nav className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+        <ol className="flex items-center space-x-2">
+          <li>
+            <a href="/jobprovider" className="hover:underline">
+              jobprovider
+            </a>
+          </li>
+          <li>/</li>
+          <li className="text-gray-800 dark:text-gray-200 font-medium">
+            Dashboard
+          </li>
+        </ol>
+      </nav>
+
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">
           Job Provider Dashboard
@@ -95,7 +106,6 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-    
         <section className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
           <h3 className="text-md font-semibold text-gray-800 dark:text-gray-100 mb-4">
             Applications Overview
@@ -114,9 +124,27 @@ export default function Dashboard() {
                   }}
                 />
                 <Legend />
-                <Line type="monotone" dataKey="Applications" stroke="#4f46e5" strokeWidth={2} dot={{ r: 4 }} />
-                <Line type="monotone" dataKey="Shortlisted" stroke="#10b981" strokeWidth={2} dot={{ r: 4 }} />
-                <Line type="monotone" dataKey="Rejected" stroke="#ef4444" strokeWidth={2} dot={{ r: 4 }} />
+                <Line
+                  type="monotone"
+                  dataKey="Applications"
+                  stroke="#4f46e5"
+                  strokeWidth={2}
+                  dot={{ r: 4 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="Shortlisted"
+                  stroke="#10b981"
+                  strokeWidth={2}
+                  dot={{ r: 4 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="Rejected"
+                  stroke="#ef4444"
+                  strokeWidth={2}
+                  dot={{ r: 4 }}
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -129,9 +157,20 @@ export default function Dashboard() {
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                <Pie
+                  data={pieData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  label
+                >
                   {pieData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={pieColors[index % pieColors.length]} />
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={pieColors[index % pieColors.length]}
+                    />
                   ))}
                 </Pie>
                 <Tooltip />
@@ -151,10 +190,17 @@ export default function Dashboard() {
           {[
             { text: "Robin Studios has 6 available positions for you" },
             { text: "DevInc invited you to interview tomorrow" },
-            { text: "Highlighted Design team hired 2 positions from your post" },
+            {
+              text: "Highlighted Design team hired 2 positions from your post",
+            },
           ].map((activity, index) => (
-            <div key={index} className="flex items-start gap-1 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">
-              <p className="text-md text-gray-700 dark:text-gray-200">{activity.text}</p>
+            <div
+              key={index}
+              className="flex items-start gap-1 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
+            >
+              <p className="text-md text-gray-700 dark:text-gray-200">
+                {activity.text}
+              </p>
             </div>
           ))}
         </div>
