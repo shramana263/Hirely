@@ -66,27 +66,27 @@ export function UserManagement() {
     {
       accessorKey: "name",
       header: ({ column }) => (
-        <Button
+        <div
         
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="text-primary-foreground hover:text-primary-foreground hover:bg-primary/80"
         >
           Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+        </div>
       ),
     },
     {
       accessorKey: "email",
       header: ({ column }) => (
-        <Button
+        <div
         
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="text-primary-foreground hover:text-primary-foreground hover:bg-primary/80"
         >
           Email
           <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+        </div>
       ),
     },
     {
@@ -104,14 +104,14 @@ export function UserManagement() {
     {
       accessorKey: "joinDate",
       header: ({ column }) => (
-        <Button
+        <div
         
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="text-primary-foreground hover:text-primary-foreground hover:bg-primary/80"
+          className=" my-3 text-primary-foreground hover:text-primary-foreground hover:bg-primary/80"
         >
           Join Date
           <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+        </div>
       ),
     },
     {
