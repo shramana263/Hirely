@@ -58,7 +58,6 @@ export default function JobSeekerProfilePage() {
     dob: "",
   });
 
-  // Check authentication
   useEffect(() => {
     const checkAuth = () => {
       try {
@@ -166,33 +165,40 @@ export default function JobSeekerProfilePage() {
     }
   };
 
-  const handleSaveProfile = async (e: React.FormEvent) => {
-    e.preventDefault();
+ // ...existing code...
+
+const handleSaveProfile = async (e: React.FormEvent) => {
+  e.preventDefault();
+  
+  try {
+    setSaving(true);
+    setError(null);
+    setSuccess(null);
     
-    try {
-      setSaving(true);
-      setError(null);
-      setSuccess(null);
-      
-      const response = await jobSeekerService.updateProfile(formData, imageFile || undefined);
-      
-      if (response.success) {
-        setSuccess("Profile updated successfully!");
-        setProfile(response.data);
-        setImageFile(null);
-        
-        // Update session storage with new name if changed
-        if (response.data.name) {
-          sessionStorage.setItem("userName", response.data.name);
-        }
+    const response = await jobSeekerService.updateProfile(formData, imageFile || undefined);
+    
+    if (response.success) {
+      setSuccess("Profile updated successfully!");
+      setProfile(response.data);
+      setImageFile(null);
+
+      // Update session storage with new name if changed
+      if (response.data.name) {
+        sessionStorage.setItem("userName", response.data.name);
       }
-    } catch (err: any) {
-      console.error("Error updating profile:", err);
-      setError(err.message);
-    } finally {
-      setSaving(false);
+
+      // Redirect to jobseeker dashboard after update
+      router.push("/jobseeker");
     }
-  };
+  } catch (err: any) {
+    console.error("Error updating profile:", err);
+    setError(err.message);
+  } finally {
+    setSaving(false);
+  }
+};
+
+// ...existing code...
 
   const handleGenerateResume = async () => {
     if (!profile) return;
@@ -590,7 +596,7 @@ export default function JobSeekerProfilePage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Resume Path */}
                 <div className="flex flex-col gap-1">
-                  <Label htmlFor="resume_path">Resume File Path</Label>
+                  <Label htmlFor="resume_path">Resume File Path Link</Label>
                   <Input
                     id="resume_path"
                     name="resume_path"
