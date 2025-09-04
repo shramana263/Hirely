@@ -1,8 +1,8 @@
-import { 
-  MapPin, 
-  Clock, 
-  Building2, 
-  DollarSign, 
+import {
+  MapPin,
+  Clock,
+  Building2,
+  DollarSign,
   BookmarkPlus,
   Bookmark,
   ExternalLink,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { 
   Filter,
   Search,
@@ -28,6 +28,31 @@ export default function JobSeekerPage() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [savedJobs, setSavedJobs] = useState<Set<string>>(new Set());
+  const [selectedTypes, setSelectedTypes] = useState<Set<string>>(new Set());
+  const [selectedLocation, setSelectedLocation] = useState<string>("All");
+  const [availableLocations, setAvailableLocations] = useState<string[]>([]);
+  const [isLocationOpen, setIsLocationOpen] = useState(false);
+  const locationRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const onDocClick = (e: MouseEvent) => {
+      if (!isLocationOpen) return;
+      if (locationRef.current && !locationRef.current.contains(e.target as Node)) {
+        setIsLocationOpen(false);
+      }
+    };
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsLocationOpen(false);
+    };
+
+    document.addEventListener('click', onDocClick);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('click', onDocClick);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [isLocationOpen]);
   const [authInfo, setAuthInfo] = useState<{isAuthenticated: boolean, token: string | null}>({
     isAuthenticated: false,
     token: null
@@ -119,11 +144,90 @@ export default function JobSeekerPage() {
     refreshJobs();
   }, []);
 
-  const filteredJobs = jobs.filter(job =>
-    job.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    job.job_type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    job.address.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Map of known city substrings -> canonical city name
+  const cityMap: Record<string, string> = {
+    'bengaluru': 'Bangalore',
+    'bangalore': 'Bangalore',
+    'kolkata': 'Kolkata',
+    'calcutta': 'Kolkata',
+    'pune': 'Pune',
+    'delhi': 'Delhi',
+    'new delhi': 'Delhi',
+    'mumbai': 'Mumbai',
+    'bombay': 'Mumbai',
+    'hyderabad': 'Hyderabad',
+    'chennai': 'Chennai',
+    'ahmedabad': 'Ahmedabad',
+    'jaipur': 'Jaipur',
+    'lucknow': 'Lucknow',
+    'surat': 'Surat',
+    'nagpur': 'Nagpur',
+    'indore': 'Indore',
+    'bhubaneswar': 'Bhubaneswar',
+    'gurgaon': 'Gurgaon',
+    'noida': 'Noida',
+    'thane': 'Thane',
+    'kochi': 'Kochi',
+    'kanpur': 'Kanpur',
+  };
+
+  const extractCity = (addr?: string) => {
+    if (!addr) return "";
+    const lower = addr.toLowerCase();
+    // First try to match any known city substring
+    for (const key of Object.keys(cityMap)) {
+      if (lower.includes(key)) return cityMap[key];
+    }
+
+    // Fallback: try comma-separated addresses, take last segment as city/district
+    const cleaned = addr.trim();
+    const parts = cleaned.split(',').map(p => p.trim()).filter(Boolean);
+    if (parts.length >= 2) return parts[parts.length - 1];
+    // If no comma, try dash or hyphen
+    const dashParts = cleaned.split(/[-–—]/).map(p => p.trim()).filter(Boolean);
+    if (dashParts.length >= 2) return dashParts[dashParts.length - 1];
+    return cleaned;
+  };
+
+  // Derive available locations from loaded jobs (city-level)
+  useEffect(() => {
+    const detected = Array.from(new Set(jobs.map(j => extractCity(j.address)).filter(Boolean)));
+
+    // Canonical city list to always include
+    const canonicalCities = [
+      'Bangalore','Kolkata','Pune','Delhi','Mumbai','Hyderabad','Chennai','Ahmedabad','Jaipur','Lucknow','Surat','Nagpur','Indore','Bhubaneswar','Gurgaon','Noida','Thane','Kochi','Kanpur','Bhubaneswar','Visakhapatnam','Vadodara','Coimbatore','Mysore','Patna','Agra','Nashik'
+    ];
+
+    const merged = Array.from(new Set([...canonicalCities, ...detected])).sort();
+    setAvailableLocations(merged);
+  }, [jobs]);
+
+  const normalizeJobType = (raw?: string) => {
+    if (!raw) return raw || "";
+    const s = raw.toLowerCase();
+    if (s.includes('full')) return 'Full time';
+    if (s.includes('part')) return 'Part time';
+    if (s.includes('intern')) return 'Internship';
+    if (s.includes('freelance')) return 'Freelance';
+    if (s.includes('contract')) return 'Contract';
+    // Fallback: title-case the raw
+    return raw.replace(/\b\w/g, c => c.toUpperCase());
+  };
+
+  const filteredJobs = jobs.filter(job => {
+    const q = searchTerm.toLowerCase();
+    const matchesSearch =
+      job.name.toLowerCase().includes(q) ||
+      (job.job_type || '').toLowerCase().includes(q) ||
+      (job.address || '').toLowerCase().includes(q);
+
+  const jobTypeNormalized = normalizeJobType(job.job_type);
+    const matchesType = selectedTypes.size === 0 || selectedTypes.has(jobTypeNormalized);
+  const jobCity = extractCity(job.address);
+    const matchesLocation = selectedLocation === "All" || jobCity === selectedLocation;
+
+    return matchesSearch && matchesType && matchesLocation;
+  });
 
   const toggleSaveJob = (jobId: string) => {
     setSavedJobs(prev => {
@@ -301,38 +405,72 @@ export default function JobSeekerPage() {
           {/* Sidebar Filters */}
           <div className="lg:col-span-1">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 sticky top-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Filter size={20} className="text-gray-600 dark:text-gray-400" />
-                <h3 className="font-semibold text-gray-900 dark:text-gray-100">Filters</h3>
-              </div>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Job Type
-                  </label>
-                  <div className="space-y-2">
-                    {['Full-time', 'Part-time', 'Contract', 'Freelance'].map((type) => (
-                      <label key={type} className="flex items-center">
-                        <input type="checkbox" className="mr-2 rounded border-gray-300" />
-                        <span className="text-sm text-gray-600 dark:text-gray-400">{type}</span>
-                      </label>
-                    ))}
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <Filter size={20} className="text-gray-600 dark:text-gray-400" />
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100">Filters</h3>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Job Type
+                    </label>
+                    <div className="space-y-2">
+                      {['Full time', 'Part time', 'Internship', 'Freelance'].map((type) => (
+                        <label key={type} className="flex items-center">
+                          <input
+                            type="checkbox"
+                            checked={selectedTypes.has(type)}
+                            onChange={() => {
+                              setSelectedTypes(prev => {
+                                const next = new Set(prev);
+                                if (next.has(type)) next.delete(type);
+                                else next.add(type);
+                                return next;
+                              });
+                            }}
+                            className="mr-2 rounded border-gray-300"
+                          />
+                          <span className="text-sm text-gray-600 dark:text-gray-400">{type}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
                 </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Experience Level
-                  </label>
-                  <div className="space-y-2">
-                    {['Entry level', 'Mid level', 'Senior level', 'Executive'].map((level) => (
-                      <label key={level} className="flex items-center">
-                        <input type="checkbox" className="mr-2 rounded border-gray-300" />
-                        <span className="text-sm text-gray-600 dark:text-gray-400">{level}</span>
-                      </label>
-                    ))}
-                  </div>
+              </div>
+
+              <div className="mt-4 relative">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Location</label>
+                <div className="relative" ref={locationRef as any}>
+                  <button
+                    type="button"
+                    onClick={() => setIsLocationOpen(v => !v)}
+                    className="w-full text-left py-1.5 px-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-sm text-gray-700 dark:text-gray-100"
+                  >
+                    {selectedLocation === 'All' ? 'All' : selectedLocation}
+                  </button>
+
+                  {isLocationOpen && (
+                    <ul className="absolute left-0 right-0 mt-1 z-50 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md max-h-60 overflow-auto shadow-lg">
+                      <li
+                        key="all"
+                        onClick={() => { setSelectedLocation('All'); setIsLocationOpen(false); }}
+                        className="px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                      >
+                        All
+                      </li>
+                      {availableLocations.map(loc => (
+                        <li
+                          key={loc}
+                          onClick={() => { setSelectedLocation(loc); setIsLocationOpen(false); }}
+                          className="px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                        >
+                          {loc}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </div>
             </div>
@@ -341,32 +479,34 @@ export default function JobSeekerPage() {
           {/* Job Listings */}
           <div className="lg:col-span-3">
             <div className="space-y-4">
-              {filteredJobs.map((job) => (
-                <JobCard
-                  key={job._id}
-                  job={job}
-                  isSaved={savedJobs.has(job._id)}
-                  onToggleSave={toggleSaveJob}
-                  onApply={handleApplyJob}
-                  onViewDetails={handleViewJobDetails}
-                  isProfileComplete={isProfileComplete}
-                  isApplied={appliedJobIds.has(job._id)}
-                />
-              ))}
+              <div className="max-h-[calc(100vh-200px)] overflow-y-auto no-scrollbar space-y-4">
+                {filteredJobs.map((job) => (
+                  <JobCard
+                    key={job._id}
+                    job={job}
+                    isSaved={savedJobs.has(job._id)}
+                    onToggleSave={toggleSaveJob}
+                    onApply={handleApplyJob}
+                    onViewDetails={handleViewJobDetails}
+                    isProfileComplete={isProfileComplete}
+                    isApplied={appliedJobIds.has(job._id)}
+                  />
+                ))}
 
-              {filteredJobs.length === 0 && !loading && (
-                <div className="text-center py-12">
-                  <div className="w-24 h-24 mx-auto mb-4 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
-                    <Briefcase size={32} className="text-gray-400" />
+                {filteredJobs.length === 0 && !loading && (
+                  <div className="text-center py-12">
+                    <div className="w-24 h-24 mx-auto mb-4 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+                      <Briefcase size={32} className="text-gray-400" />
+                    </div>
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+                      No jobs found
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      Try adjusting your search terms or filters
+                    </p>
                   </div>
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-                    No jobs found
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    Try adjusting your search terms or filters
-                  </p>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>
