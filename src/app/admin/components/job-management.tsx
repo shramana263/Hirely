@@ -50,7 +50,7 @@ export function JobManagement() {
       accessorKey: "status",
       header: "Status",
     },
-    {
+     {
       id: "actions",
       header: "Actions",
       cell: ({ row }) => {
@@ -63,7 +63,7 @@ export function JobManagement() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => console.log('View job:', job.id)}>
                 <Eye className="mr-2 h-4 w-4" />
                 View Details
               </DropdownMenuItem>
