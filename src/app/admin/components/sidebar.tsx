@@ -1,6 +1,6 @@
 "use client"
 
-import { Users, Building2, Tags, ChevronLeft, ChevronRight } from "lucide-react"
+import { Users, Building2, Briefcase, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -15,24 +15,26 @@ export function Sidebar({ activeSection, setActiveSection, collapsed, setCollaps
   const menuItems = [
     { id: "users", label: "User Management", icon: Users },
     { id: "providers", label: "Provider Management", icon: Building2 },
-
-    { id: "jobs", label: "Job Management", icon: Building2 },
+    { id: "jobs", label: "Job Management", icon: Briefcase },
   ]
 
   return (
     <div
       className={cn(
-        "bg-sidebar border-r border-sidebar-border transition-all duration-300 flex flex-col",
+        "bg-gray-50 border-r border-gray-200 transition-all duration-300 flex flex-col h-full",
         collapsed ? "w-16" : "w-64",
       )}
     >
-      <div className="p-4 border-b border-sidebar-border">
+      <div className="p-4 border-b border-gray-200">
         <div className="flex items-center justify-between">
-          {!collapsed && <h1 className="text-xl font-bold text-sidebar-foreground">Admin Panel</h1>}
+          {!collapsed && (
+            <h1 className="text-xl font-bold text-gray-900">Admin Panel</h1>
+          )}
           <Button
-         
+            variant="ghost"
+            size="sm"
             onClick={() => setCollapsed(!collapsed)}
-            className="text-gray-950 hover:bg-sidebar-accent"
+            className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
           >
             {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
           </Button>
@@ -43,14 +45,18 @@ export function Sidebar({ activeSection, setActiveSection, collapsed, setCollaps
         <ul className="space-y-2">
           {menuItems.map((item) => {
             const Icon = item.icon
+            const isActive = activeSection === item.id
+            
             return (
               <li key={item.id}>
                 <Button
-              
+                  variant={isActive ? "default" : "ghost"}
                   className={cn(
-                    "w-full justify-start text-gray-900 hover:bg-sidebar-accent",
-                    activeSection === item.id && "bg-sidebar-accent  text-gray-900",
-                    collapsed && "px-2",
+                    "w-full justify-start transition-colors",
+                    isActive 
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90" 
+                      : "text-gray-700 hover:text-gray-900 hover:bg-gray-100",
+                    collapsed ? "px-2" : "px-3",
                   )}
                   onClick={() => setActiveSection(item.id)}
                 >
