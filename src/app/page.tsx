@@ -1,26 +1,43 @@
 "use client"
 
 // import {  Float} from "@react-three/drei"
-import { easeOut } from "framer-motion"
+import { easeOut, useInView } from "framer-motion"
 
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Search, Users, Briefcase, TrendingUp, Star, ArrowRight, Building, MapPin, Clock } from "lucide-react"
+import { Search, Users, Briefcase, TrendingUp, Star, ArrowRight, Building, MapPin, Clock, CheckCircle } from "lucide-react"
 import Link from "next/link"
 import Navbar from "@/components/structure/navbar"
+import { useEffect, useRef, useState } from "react"
+import { Play } from "next/font/google"
 
-// function FloatingCube({ position, color }: { position: [number, number, number]; color: string }) {
-//   return (
-//     <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-//       <mesh position={position}>
-//         <boxGeometry args={[0.5, 0.5, 0.5]} />
-//         <meshStandardMaterial color={color} />
-//       </mesh>
-//     </Float>
-//   )
-// }
+function FloatingElements() {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {[...Array(20)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-2 h-2 bg-blue-200/20 rounded-full"
+          initial={{
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+          }}
+          animate={{
+            y: [0, -100, 0],
+            x: [0, Math.random() * 50 - 25, 0],
+          }}
+          transition={{
+            duration: Math.random() * 10 + 10,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "linear",
+          }}
+        />
+      ))}
+    </div>
+  )
+}
 
 
 export default function JobPlatformLanding() {
@@ -34,7 +51,26 @@ export default function JobPlatformLanding() {
     },
 
   }
+function AnimatedCounter({ end, duration = 2 }: { end: number; duration?: number }) {
+  const [count, setCount] = useState(0)
+  const ref = useRef<HTMLDivElement>(null)
+  const isInView = useInView(ref)
 
+  useEffect(() => {
+    if (isInView) {
+      let startTime: number
+      const animate = (currentTime: number) => {
+        if (!startTime) startTime = currentTime
+        const progress = Math.min((currentTime - startTime) / (duration * 1000), 1)
+        setCount(Math.floor(progress * end))
+        if (progress < 1) requestAnimationFrame(animate)
+      }
+      requestAnimationFrame(animate)
+    }
+  }, [isInView, end, duration])
+
+  return <div ref={ref}>{count.toLocaleString()}</div>
+}
 
 
   const itemVariants = {
@@ -223,7 +259,7 @@ export default function JobPlatformLanding() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+      {/* <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
         <div className="container mx-auto px-14">
           <motion.div
         variants={containerVariants}
@@ -253,31 +289,106 @@ export default function JobPlatformLanding() {
         ))}
           </motion.div>
         </div>
+      </section> */}
+            <section className="py-32 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/api/placeholder/1920/600')] bg-cover bg-center opacity-10" />
+        <FloatingElements />
+
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid md:grid-cols-4 gap-12 text-center"
+          >
+            {[
+              {
+                number: 2000000,
+                label: "Active Job Seekers",
+                icon: <Users className="mx-auto mb-4 w-12 h-12 text-blue-200" />,
+                suffix: "+",
+              },
+              {
+                number: 50000,
+                label: "Hiring Companies",
+                icon: <Building className="mx-auto mb-4 w-12 h-12 text-purple-200" />,
+                suffix: "+",
+              },
+              {
+                number: 100000,
+                label: "Jobs Posted Monthly",
+                icon: <Briefcase className="mx-auto mb-4 w-12 h-12 text-pink-200" />,
+                suffix: "+",
+              },
+              {
+                number: 95,
+                label: "Success Rate",
+                icon: <TrendingUp className="mx-auto mb-4 w-12 h-12 text-green-200" />,
+                suffix: "%",
+              },
+            ].map((stat, index) => (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                whileHover={{ scale: 1.05 }}
+                className="bg-white/10 backdrop-blur-md rounded-3xl shadow-2xl p-10 hover:bg-white/20 transition-all duration-300 border border-white/20"
+              >
+                {stat.icon}
+                <div className="text-6xl font-extrabold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200">
+                  <AnimatedCounter end={stat.number} />
+                  {stat.suffix}
+                </div>
+                <div className="text-blue-100 text-lg font-medium tracking-wide">{stat.label}</div>
+                {index === 3 && <div className="mt-3 text-sm text-green-200 italic">Based on 50K+ user surveys</div>}
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4 text-center">
+   <section className="py-32 bg-gradient-to-br from-gray-50 to-blue-50 relative overflow-hidden">
+        <div className="container mx-auto px-4 text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="max-w-3xl mx-auto"
+            className="max-w-4xl mx-auto"
           >
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Ready to Take the Next Step?</h2>
-            <p className="text-xl text-gray-600 mb-8">
-              Join thousands of professionals who have found their dream jobs through our platform.
+            <Badge className="bg-green-100 text-green-700 mb-8 text-lg px-6 py-3">
+              <CheckCircle className="w-5 h-5 mr-2" />
+              Join 2M+ Successful Job Seekers
+            </Badge>
+
+            <h2 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-6 text-balance">
+              Your Dream Job is Just One Click Away
+            </h2>
+            <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto text-pretty">
+              Don't let another opportunity pass by. Join the platform that has helped millions of professionals find
+              their perfect career match.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="text-lg flex flex-row nowrap justify-center items-center  px-8 py-3">
-                Start Job Search
-                <ArrowRight className="  ml-4 w-5 h-5" />
-              </Button>
-              <Button className="text-lg flex-row px-8 py-3 bg-transparent border border-gray-300 hover:bg-gray-100">
-                Post a Job
-              </Button>
+
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button className="text-lg px-10 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-xl hover:shadow-2xl transition-all duration-300">
+                  Start Your Job Search
+                  <ArrowRight className="ml-3 w-5 h-5" />
+                </Button>
+              </motion.div>
+
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  variant="outline"
+                  className="text-lg px-10 py-4 border-2 border-gray-300 hover:bg-gray-100 transition-all duration-300 bg-transparent"
+                >
+                  <div className="mr-3 w-5 h-5" />
+                  Watch Success Stories
+                </Button>
+              </motion.div>
             </div>
+
+            <div className="mt-12 text-sm text-gray-500">✓ Free to join ✓ No hidden fees ✓ Cancel anytime</div>
           </motion.div>
         </div>
       </section>
