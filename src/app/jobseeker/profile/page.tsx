@@ -138,6 +138,7 @@ export default function JobSeekerProfilePage() {
           setImagePreview(`https://jobsite-api.wishalpha.com${response.data.image}`);
         }
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error("Error fetching profile:", err);
       setError(err.message);
@@ -186,6 +187,7 @@ export default function JobSeekerProfilePage() {
           sessionStorage.setItem("userName", response.data.name);
         }
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error("Error updating profile:", err);
       setError(err.message);
@@ -214,6 +216,7 @@ export default function JobSeekerProfilePage() {
         window.open(response.data.resume_url, '_blank');
         setSuccess("Resume generated successfully!");
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error("Error generating resume:", err);
       setError(err.message);

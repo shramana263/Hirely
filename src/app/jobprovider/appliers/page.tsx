@@ -11,8 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-// ✅ Applicants sample data
+//  Applicants sample data
 const applicants = [
   {
     id: 1,
@@ -178,8 +177,6 @@ const columns: ColumnDef<typeof applicants[0]>[] = [
     },
   },
 ];
-
-
 export default function ApplicantsPage() {
   const router = useRouter();
 

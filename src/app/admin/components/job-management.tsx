@@ -54,6 +54,7 @@ export function JobManagement() {
       id: "actions",
       header: "Actions",
       cell: ({ row }) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const job = row.original
         return (
           <DropdownMenu>

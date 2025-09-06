@@ -52,6 +52,7 @@ class JobService {
         page: response.data.page,
         limit: response.data.limit
       };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Failed to fetch jobs:", error);
       console.error("Error response:", error.response);
@@ -115,11 +116,13 @@ class JobService {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async applyForJob(jobId: string, applicationData?: any): Promise<void> {
     try {
       console.log("Applying for job:", jobId);
       const response = await axiosClient.post(`/jobs/${jobId}/apply`, applicationData || {});
       console.log("Apply job response:", response);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(`Failed to apply for job with id ${jobId}:`, error);
       

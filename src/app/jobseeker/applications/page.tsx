@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -55,6 +54,7 @@ export default function ApplicationsPage() {
     }, 50);
     
     return () => clearTimeout(timeoutId);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, currentPage]);
 
   const fetchApplications = async () => {
@@ -69,6 +69,7 @@ export default function ApplicationsPage() {
         
         let applicationsData = [];
         
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const data: any = response.data;
 
         if (data && Array.isArray(data.applications)) {
@@ -92,6 +93,7 @@ export default function ApplicationsPage() {
         console.error("Applications response not successful:", response);
         setApplications([]);
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error("Error fetching applications:", err);
       setError(err.message);

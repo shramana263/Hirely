@@ -62,6 +62,7 @@ class JobSeekerService {
       const response = await axiosClient.get("/");
       console.log("Connection test response:", response);
       return true;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Connection test failed:", error);
       return false;
@@ -82,6 +83,7 @@ class JobSeekerService {
       }
       
       return response.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Failed to fetch profile:", error);
       console.error("Error response:", error.response);
@@ -149,6 +151,7 @@ class JobSeekerService {
       }
       
       return response.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("❌ Failed to update profile:", error);
       
@@ -191,6 +194,7 @@ class JobSeekerService {
       console.log("Generate resume API response:", response);
       
       return response.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Failed to generate resume:", error);
       

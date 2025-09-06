@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from "react";
 import { X, Briefcase, Building2, MapPin, DollarSign, Send } from "lucide-react";
 import { Job } from "@/services/jobService";
-
+import { Button } from "./ui/button";
 interface JobApplicationModalProps {
   job: Job | null;
   isOpen: boolean;
@@ -77,12 +78,12 @@ export default function JobApplicationModal({
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
             Apply for Job
           </h2>
-          <button
+          <Button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
           >
             <X size={20} className="text-gray-500" />
-          </button>
+          </Button>
         </div>
 
         {/* Job Info */}

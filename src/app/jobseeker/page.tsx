@@ -99,6 +99,7 @@ export default function JobSeekerPage() {
       console.log("Jobs response:", response);
       setJobs(response.data || []);
       setError(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Failed to fetch jobs", error);
       
@@ -184,6 +185,7 @@ export default function JobSeekerPage() {
         setIsApplicationModalOpen(false);
         setSelectedJob(null);
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Failed to apply for job:", error);
       throw error; // Re-throw to be handled by the modal

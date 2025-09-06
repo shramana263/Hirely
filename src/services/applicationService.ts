@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axiosClient from "@/library/axiosClient";
 
 export interface Application {
@@ -58,6 +59,7 @@ class ApplicationService {
       console.log("Apply job response:", response);
       
       return response.data;
+     
     } catch (error: any) {
       console.error(`Failed to apply for job with id ${jobId}:`, error);
       
