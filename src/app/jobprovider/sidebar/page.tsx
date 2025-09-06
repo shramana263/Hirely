@@ -1,11 +1,11 @@
-
 "use client";
 
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import axiosClient from "@/library/axiosClient";
+
 import { toast } from "sonner";
+import axiosClient from "@/library/axiosClient";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -25,28 +25,28 @@ export default function Sidebar({ isOpen, setSidebarOpen }: SidebarProps) {
 
   return (
     <>
-      {/* Mobile toggle button */}
+    
       <button
         onClick={() => setSidebarOpen(!isOpen)}
-        className="fixed md:hidden z-30 top-4 left-4 p-2 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white"
+        className="fixed md:hidden z-40 top-4 left-4 p-2 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white"
         aria-label="Toggle menu"
       >
         {isOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
-      {/* Overlay */}
+      {/* Overlay for mobile */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       <aside
-        className={`bg-gray-200 dark:bg-gray-800 w-64 p-5 space-y-6 border-r border-gray-200 dark:border-gray-700 fixed h-full z-20 md:bg-white md:p-8 transition-transform duration-300 ease-in-out ${
-          isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-        }`}
+        className={`bg-gray-200 dark:bg-gray-800 w-64 p-5 space-y-6 border-r border-gray-200 dark:border-gray-700 fixed h-full z-40 md:bg-white md:p-8 transition-transform duration-300 ease-in-out
+        ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
+        {/* Logo + close */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="font-bold text-gray-800 dark:text-gray-100 text-2xl md:text-3xl">
             <Link href="/jobprovider">HIRELY</Link>
@@ -59,7 +59,7 @@ export default function Sidebar({ isOpen, setSidebarOpen }: SidebarProps) {
             <X size={20} />
           </button>
         </div>
-
+        
         <nav className="flex flex-col gap-2 md:gap-3 text-sm font-bold">
           {navItems.map(({ label, path }) => (
             <Link
@@ -72,6 +72,7 @@ export default function Sidebar({ isOpen, setSidebarOpen }: SidebarProps) {
             </Link>
           ))}
 
+   
           <button
             onClick={async () => {
               sessionStorage.clear();

@@ -13,12 +13,14 @@ import axiosClient from "@/library/axiosClient"
 
 
 export interface User {
-  id: string
+  id: string  
   name: string
   email: string
-  status: "active" | "blocked" | "pending"
-  joinDate: string
-  lastLogin: string
+  role: "admin" | "jobseeker" | "jobprovider"
+  status: "active" | "inactive" | "blocked"
+  joinedAt: string  
+  createdAt: string
+  updatedAt: string
 }
 
 
@@ -29,12 +31,20 @@ export function UserManagement() {
   const [modalOpen, setModalOpen] = useState(false)
   const [modalMode, setModalMode] = useState<"view" | "edit">("view")
 
-  useEffect(() => {
+ 
+   useEffect(() => {
     async function fetchUsers() {
       try {
         const res = await axiosClient.get("/admin/allusers")
+        console.log("API Response:", res.data) // Debug log
         if (res.data.success) {
-          setUsers(res.data.data)
+          const mappedUsers = res.data.data.map((user: any) => ({
+            ...user,
+            id: user._id || user.id,  
+            joinedAt: user.joinedAt || user.createdAt,  
+          }))
+          console.log("Mapped users:", mappedUsers) 
+          setUsers(mappedUsers)
         }
       } catch (error) {
         console.error("Failed to fetch users:", error)
@@ -43,11 +53,30 @@ export function UserManagement() {
     fetchUsers()
   }, [])
 
+ const handleUserAction = async (userId: string, action: "block" | "unblock") => {
+    try {
+      console.log("User ID:", userId) // Debug log to see what ID we're getting
+      
+      // Make API call to update user status on backend
+      const newStatus = action === "block" ? "blocked" : "active"
+      const res = await axiosClient.put(`/admin/users/${userId}/status`, {
+        status: newStatus
+      })
 
-  const handleUserAction = (userId: string, action: "block" | "unblock") => {
-    setUsers(
-      users.map((user) => (user.id === userId ? { ...user, status: action === "block" ? "blocked" : "active" } : user)),
-    )
+      if (res.data.success) {
+        // Only update local state if API call succeeds
+        setUsers(
+          users.map((user) => 
+            user.id === userId 
+              ? { ...user, status: newStatus }
+              : user
+          )
+        )
+      }
+    } catch (error) {
+      console.error("Failed to update user status:", error)
+      
+    }
   }
 
   const handleViewUser = (user: User) => {
@@ -66,53 +95,72 @@ export function UserManagement() {
     {
       accessorKey: "name",
       header: ({ column }) => (
-        <div
-        
+        <Button
+         
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="text-primary-foreground hover:text-primary-foreground hover:bg-primary/80"
         >
           Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
-        </div>
+        </Button>
       ),
     },
-    {
+ {
       accessorKey: "email",
       header: ({ column }) => (
-        <div
-        
+        <Button
+          
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="text-primary-foreground hover:text-primary-foreground hover:bg-primary/80"
         >
           Email
           <ArrowUpDown className="ml-2 h-4 w-4" />
-        </div>
+        </Button>
       ),
+    },
+     {
+      accessorKey: "role",
+      header: "Role",
+      cell: ({ row }) => {
+        const role = row.getValue("role") as string
+        return (
+          <Badge >
+            {role}
+          </Badge>
+        )
+      },
     },
     {
       accessorKey: "status",
       header: "Status",
       cell: ({ row }) => {
         const status = row.getValue("status") as string
+        const variant = status === "active" ? "default" : status === "blocked" ? "destructive" : "secondary"
         return (
-          <Badge>
+          <Badge >
             {status}
           </Badge>
         )
       },
     },
     {
-      accessorKey: "joinDate",
+      accessorKey: "joinedAt", // Changed to match the mapped field
       header: ({ column }) => (
-        <div
-        
+        <Button
+          variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className=" my-3 text-primary-foreground hover:text-primary-foreground hover:bg-primary/80"
+          className="text-primary-foreground hover:text-primary-foreground hover:bg-primary/80"
         >
           Join Date
           <ArrowUpDown className="ml-2 h-4 w-4" />
-        </div>
+        </Button>
       ),
+      cell: ({ row }) => {
+        const date = row.getValue("joinedAt") as string 
+        if (!date) return "N/A"
+        const dateObj = new Date(date)
+        return isNaN(dateObj.getTime()) ? "Invalid Date" : dateObj.toLocaleDateString()
+      },
     },
     {
       id: "actions",

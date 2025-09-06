@@ -137,4 +137,13 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+
+  /* Hide scrollbars for overflow containers */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+  }
 }

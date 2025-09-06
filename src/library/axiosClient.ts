@@ -79,7 +79,14 @@
 "use client";
 import axios from "axios";
 const axiosClient = axios.create({
-  baseURL: "https://jobsite-api.wishalpha.com/api/",
+
+  // baseURL: process.env.NODE_ENV === 'development' 
+  //   ? "http://localhost:6008/api/" 
+  //   : "https://jobsite-api.wishalpha.com/api/",
+
+    baseURL: "https://jobsite-api.wishalpha.com/api/",
+
+
   headers: {
     "Content-Type": "application/json",
   },
