@@ -11,7 +11,9 @@ import JobCard from "@/components/JobCard";
 import JobSeekerNavbar from "@/components/JobSeekerNavbar";
 import jobSeekerService from "@/services/jobSeekerService";
 import applicationService from "@/services/applicationService";
+import savedJobService from "@/services/savedJobService";
 import JobApplicationModal from "@/components/JobApplicationModal";
+import JobDetailsModal from "@/components/JobDetailsModal";
 
 // Utility function to check authentication
 const checkAuthentication = () => {
@@ -28,6 +30,7 @@ export default function JobSeekerPage() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [savedJobs, setSavedJobs] = useState<Set<string>>(new Set());
+  const [savedJobsLoading, setSavedJobsLoading] = useState(false);
   const [selectedTypes, setSelectedTypes] = useState<Set<string>>(new Set());
   const [selectedLocation, setSelectedLocation] = useState<string>("All");
   const [availableLocations, setAvailableLocations] = useState<string[]>([]);
@@ -61,6 +64,8 @@ export default function JobSeekerPage() {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
   const [appliedJobIds, setAppliedJobIds] = useState<Set<string>>(new Set());
+  const [selectedJobForDetails, setSelectedJobForDetails] = useState<Job | null>(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
   // Update auth info whenever component mounts or updates
   useEffect(() => {
@@ -71,6 +76,7 @@ export default function JobSeekerPage() {
     if (isAuthenticated && token) {
       checkProfileCompletion();
       fetchAppliedJobIds(); // Also fetch applied jobs
+      fetchSavedJobs(); // Fetch saved jobs
     }
   }, []);
 
@@ -102,6 +108,21 @@ export default function JobSeekerPage() {
     } catch (error) {
       console.error("Failed to fetch applied job IDs:", error);
       // Keep existing applied jobs in state if fetch fails
+    }
+  };
+
+  const fetchSavedJobs = async () => {
+    try {
+      setSavedJobsLoading(true);
+      const response = await savedJobService.getMySavedJobs();
+      const savedJobIds = response.data.savedJobs.map(saved => saved.job_id._id);
+      console.log("Fetched saved job IDs:", savedJobIds);
+      setSavedJobs(new Set(savedJobIds));
+    } catch (error) {
+      console.error("Failed to fetch saved jobs:", error);
+      // Keep existing saved jobs in state if fetch fails
+    } finally {
+      setSavedJobsLoading(false);
     }
   };
 
@@ -229,16 +250,32 @@ export default function JobSeekerPage() {
     return matchesSearch && matchesType && matchesLocation;
   });
 
-  const toggleSaveJob = (jobId: string) => {
-    setSavedJobs(prev => {
-      const newSaved = new Set(prev);
-      if (newSaved.has(jobId)) {
-        newSaved.delete(jobId);
+  const toggleSaveJob = async (jobId: string) => {
+    const isCurrentlySaved = savedJobs.has(jobId);
+    
+    try {
+      if (isCurrentlySaved) {
+        // Unsave the job
+        await savedJobService.unsaveJob(jobId);
+        setSavedJobs(prev => {
+          const newSaved = new Set(prev);
+          newSaved.delete(jobId);
+          return newSaved;
+        });
       } else {
-        newSaved.add(jobId);
+        // Save the job
+        await savedJobService.saveJob(jobId);
+        setSavedJobs(prev => {
+          const newSaved = new Set(prev);
+          newSaved.add(jobId);
+          return newSaved;
+        });
       }
-      return newSaved;
-    });
+    } catch (error) {
+      console.error(`Failed to ${isCurrentlySaved ? 'unsave' : 'save'} job:`, error);
+      // You could show a toast notification here
+      alert(`Failed to ${isCurrentlySaved ? 'unsave' : 'save'} job. Please try again.`);
+    }
   };
 
   const handleApplyJob = async (jobId: string) => {
@@ -295,9 +332,11 @@ export default function JobSeekerPage() {
   };
 
   const handleViewJobDetails = (jobId: string) => {
-    // Navigate to job details page
-    console.log("View job details:", jobId);
-    // You can implement navigation here
+    const job = jobs.find(j => j._id === jobId);
+    if (job) {
+      setSelectedJobForDetails(job);
+      setIsDetailsModalOpen(true);
+    }
   };
 
   if (loading) {
@@ -381,7 +420,7 @@ export default function JobSeekerPage() {
                 Job Recommendations
               </h1>
               <p className="text-gray-600 dark:text-gray-400 mt-1">
-                {filteredJobs.length} job{filteredJobs.length !== 1 ? 's' : ''} found
+                {jobs.length} job{jobs.length !== 1 ? 's' : ''} found
               </p>
             </div>
             
@@ -521,6 +560,16 @@ export default function JobSeekerPage() {
           setSelectedJob(null);
         }}
         onSubmit={handleSubmitApplication}
+      />
+
+      {/* Job Details Modal */}
+      <JobDetailsModal
+        job={selectedJobForDetails}
+        isOpen={isDetailsModalOpen}
+        onClose={() => {
+          setIsDetailsModalOpen(false);
+          setSelectedJobForDetails(null);
+        }}
       />
     </div>
   );
