@@ -37,7 +37,7 @@ export default function Sidebar({ isOpen, setSidebarOpen }: SidebarProps) {
       {/* Overlay for mobile */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden w-[64px]"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -46,7 +46,6 @@ export default function Sidebar({ isOpen, setSidebarOpen }: SidebarProps) {
         className={`bg-gray-200 dark:bg-gray-800 w-64 p-5 space-y-6 border-r border-gray-200 dark:border-gray-700 fixed h-full z-40 md:bg-white md:p-8 transition-transform duration-300 ease-in-out
         ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
-        {/* Logo + close */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="font-bold text-gray-800 dark:text-gray-100 text-2xl md:text-3xl">
             <Link href="/jobprovider">HIRELY</Link>
