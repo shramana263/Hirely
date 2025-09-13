@@ -13,31 +13,31 @@ import Navbar from "@/components/structure/navbar"
 import { useEffect, useRef, useState } from "react"
 import { Play } from "next/font/google"
 
-function FloatingElements() {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {[...Array(20)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-2 h-2 bg-blue-200/20 rounded-full"
-          initial={{
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
-          }}
-          animate={{
-            y: [0, -100, 0],
-            x: [0, Math.random() * 50 - 25, 0],
-          }}
-          transition={{
-            duration: Math.random() * 10 + 10,
-            repeat: Number.POSITIVE_INFINITY,
-            ease: "linear",
-          }}
-        />
-      ))}
-    </div>
-  )
-}
+// function FloatingElements() {
+//   return (
+//     <div className="absolute inset-0 overflow-hidden pointer-events-none">
+//       {[...Array(20)].map((_, i) => (
+//         <motion.div
+//           key={i}
+//           className="absolute w-2 h-2 bg-blue-200/20 rounded-full"
+//           initial={{
+//             x: Math.random() * window.innerWidth,
+//             y: Math.random() * window.innerHeight,
+//           }}
+//           animate={{
+//             y: [0, -100, 0],
+//             x: [0, Math.random() * 50 - 25, 0],
+//           }}
+//           transition={{
+//             duration: Math.random() * 10 + 10,
+//             repeat: Number.POSITIVE_INFINITY,
+//             ease: "linear",
+//           }}
+//         />
+//       ))}
+//     </div>
+//   )
+// }
 
 
 export default function JobPlatformLanding() {
@@ -292,7 +292,7 @@ function AnimatedCounter({ end, duration = 2 }: { end: number; duration?: number
       </section> */}
             <section className="py-32 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/api/placeholder/1920/600')] bg-cover bg-center opacity-10" />
-        <FloatingElements />
+        {/* <FloatingElements /> */}
 
         <div className="container mx-auto px-4 relative z-10">
           <motion.div

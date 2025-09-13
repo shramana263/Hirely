@@ -217,7 +217,7 @@ const handleSaveProfile = async (e: React.FormEvent) => {
       
       if (response.success) {
         // Download or open the generated resume
-        window.open(response.data.resume_url, '_blank');
+        // window.open(response.data.resume_url, '_blank');
         setSuccess("Resume generated successfully!");
       }
     } catch (err: any) {

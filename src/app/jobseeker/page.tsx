@@ -4,7 +4,8 @@ import { useEffect, useState, useRef } from "react";
 import { 
   Filter,
   Search,
-  Briefcase
+  Briefcase,
+  Link
 } from "lucide-react";
 import jobService, { Job } from "@/services/jobService";
 import JobCard from "@/components/JobCard";
@@ -340,18 +341,17 @@ export default function JobSeekerPage() {
           <div className="space-y-2">
             {isAuthError ? (
               <div className="space-x-4">
-                <button 
-                  onClick={() => window.location.href = '/login'} 
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                  Login
-                </button>
-                <button 
-                  onClick={() => window.location.href = '/register'} 
+
+              <Link to="/login" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+               Login
+              </Link>
+               
+                <Link
+                  to="/register" 
                   className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
                 >
                   Register
-                </button>
+                </Link>
               </div>
             ) : (
               <button 

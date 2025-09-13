@@ -11,6 +11,12 @@ const nextConfig: NextConfig = {
     // your project has type errors.
     ignoreBuildErrors: true,
   },
+ 
+  experimental: {
+    optimizeCss: false
+  }
+
+
 };
 
 export default nextConfig;
